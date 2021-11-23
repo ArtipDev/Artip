@@ -9,27 +9,30 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import estg.djr.artip.ui.theme.ArtipTheme
-import estg.djr.artip.ui.theme.bg_main
 
-class LoginActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState : Bundle?) {
+class Map : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             ArtipTheme {
+                // A surface container using the 'background' color from the theme
+                Surface(color = MaterialTheme.colors.background) {
+                    Greeting3("Android")
+                }
             }
         }
     }
 }
 
 @Composable
-fun Greeting2(name : String) {
+fun Greeting3(name: String) {
     Text(text = "Hello $name!")
 }
 
 @Preview(showBackground = true)
 @Composable
-fun DefaultPreview2() {
+fun DefaultPreview3() {
     ArtipTheme {
-        Greeting2("Android")
+        Greeting3("Android")
     }
 }

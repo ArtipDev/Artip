@@ -47,21 +47,12 @@ class Navbar : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ArtipTheme {
-                MainPage()
+               BottomNavigationBar()
             }
         }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun MainPage() {
-    Scaffold(
-        bottomBar = { BottomNavigationBar() }
-    ) {
-
-    }
-}
 
 @Composable
 fun BottomNavigationBar() {

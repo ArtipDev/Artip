@@ -10,30 +10,29 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Artip">
         <activity
+            android:name=".Map"
+            android:exported="true"
+            android:label="@string/title_activity_map"
+            android:theme="@style/Theme.Artip.NoActionBar" />
+        <activity
             android:name=".LoginActivity"
             android:exported="true"
             android:label="@string/title_activity_login"
-            android:theme="@style/Theme.Artip.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/Theme.Artip.NoActionBar"></activity>
         <activity
             android:name=".Navbar"
             android:exported="true"
             android:label="@string/title_activity_navbar"
-            android:theme="@style/Theme.Artip.NoActionBar">
+            android:theme="@style/Theme.Artip.NoActionBar"></activity>
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"></activity>
     </application>
 
 </manifest>
