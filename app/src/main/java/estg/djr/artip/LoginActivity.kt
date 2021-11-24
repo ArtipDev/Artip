@@ -2,10 +2,12 @@ package estg.djr.artip
 
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.view.RoundedCorner
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
@@ -13,9 +15,13 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.fontResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -67,6 +73,7 @@ fun LoginScreen() {
         ) {
             Text(
                 text = stringResource(id = R.string.welcome_message),
+                fontFamily = FontFamily(Font(R.font.worksansregular)),
                 fontSize = 30.sp,
                 color = SelectedNavButton)
         }
@@ -80,20 +87,73 @@ fun LoginScreen() {
             horizontalArrangement = Arrangement.Center
         ) {
             Column(modifier = Modifier.padding(10.dp)){
-                Text(text = stringResource(id = R.string.login_message))
-                Spacer(modifier = Modifier.size(5.dp))
-                Column {
-                    Button(onClick = { /*TODO*/ },
-                        Modifier.background(color = bg_main)
-                            .border( width = 10.dp,
-                            color = Color.Red,
-                                shape = RoundedCornerShape(5.dp)
-                            )) {
-                        Image(painter = painterResource(id = R.drawable.g), contentDescription = "google"
-                            , Modifier.size(50.dp))
+                Row(Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center) {
+                    Text(text = stringResource(id = R.string.login_message),
+                        fontFamily = FontFamily(Font(R.font.worksansregular)),
+                    fontSize = 20.sp,
+                    color = bg_main)
+                    Spacer(modifier = Modifier.size(5.dp))
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Column {
+                        Box(
+                            Modifier
+                                .padding(10.dp)
+                                .clip(shape = RoundedCornerShape(50))
+                        )
+                        {
+                            Image(painter = painterResource(id = R.drawable.g), contentDescription = "google"
+                                ,
+                                Modifier
+                                    .size(80.dp)
+                                    .background(color = bg_main)
+                                    .padding(10.dp))
+                        }
                     }
                 }
+                Spacer(modifier = Modifier.size(40.dp))
+                Column(modifier = Modifier.background(color = SelectedNavButton).fillMaxWidth().fillMaxHeight()
+                    ) {
+                    Row(Modifier.fillMaxWidth()
+                        .clip(shape = RoundedCornerShape(20.dp))
+                        .padding(10.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(text = stringResource(id = R.string.register_message),
+                            fontFamily = FontFamily(Font(R.font.worksansregular)),
+                            fontSize = 20.sp,
+                            color = bg_main)
+                        Spacer(modifier = Modifier.size(5.dp))
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Column {
+                            Box(
+                                Modifier
+                                    .padding(10.dp)
+                                    .clip(shape = RoundedCornerShape(50))
+                            )
+                            {
+                                Image(painter = painterResource(id = R.drawable.g), contentDescription = "google"
+                                    ,
+                                    Modifier
+                                        .size(80.dp)
+                                        .background(color = bg_main)
+                                        .padding(10.dp))
+                            }
+                        }
+                    }
+
+                }
+
             }
+
         }
     }
 }
