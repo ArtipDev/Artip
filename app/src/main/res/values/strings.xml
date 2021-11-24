@@ -7,4 +7,7 @@
     <string name="title_activity_navbar">Navbar</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_map">Map</string>
+    <string name="welcome_message">Welcome to Artip!</string>
+    <string name="login_message">Login ;)</string>
+    <string name="register_message">Or register!</string>
 </resources>
