@@ -5,6 +5,27 @@
       <map>
         <entry key="../../../../layout/compose-model-1637681751395.xml" value="0.18327702702702703" />
         <entry key="../../../../layout/compose-model-1637682123575.xml" value="0.1701858108108108" />
+        <entry key="../../../../layout/compose-model-1638124524093.xml" value="0.2" />
+        <entry key="../../../../layout/compose-model-1638126053635.xml" value="0.3103885135135135" />
+        <entry key="../../../../layout/compose-model-1638126529936.xml" value="0.29307432432432434" />
+        <entry key="../../../../layout/compose-model-1638128328361.xml" value="0.33" />
+        <entry key="../../../../layout/compose-model-1638128625676.xml" value="1.6064981949458483" />
+        <entry key="../../../../layout/compose-model-1638128635056.xml" value="1.6064981949458483" />
+        <entry key="../../../../layout/compose-model-1638128700276.xml" value="0.29771959459459457" />
+        <entry key="../../../../layout/compose-model-1638128759392.xml" value="1.0" />
+        <entry key="../../../../layout/compose-model-1638129525706.xml" value="1.6064981949458483" />
+        <entry key="../../../../layout/compose-model-1638129527775.xml" value="1.6064981949458483" />
+        <entry key="../../../../layout/compose-model-1638129536944.xml" value="0.29771959459459457" />
+        <entry key="../../../../layout/compose-model-1638129542531.xml" value="0.29771959459459457" />
+        <entry key="../../../../layout/compose-model-1638129724198.xml" value="0.1" />
+        <entry key="../../../../layout/compose-model-1638129725055.xml" value="1.6064981949458483" />
+        <entry key="../../../../layout/compose-model-1638131367272.xml" value="0.29771959459459457" />
+        <entry key="../../../../layout/compose-model-1638131421928.xml" value="0.29771959459459457" />
+        <entry key="../../../../layout/compose-model-1638131431209.xml" value="0.29771959459459457" />
+        <entry key="../../../../layout/compose-model-1638132402786.xml" value="0.25" />
+        <entry key="../../../../layout/compose-model-1638132407064.xml" value="1.595667870036101" />
+        <entry key="../../../../layout/compose-model-1638132413544.xml" value="1.595667870036101" />
+        <entry key="../../../../layout/compose-model-1638132458642.xml" value="0.3112331081081081" />
         <entry key="..\:/Users/diogo/Bet20/IPVC/Artip/app/src/main/res/drawable/baseline_feed_24.xml" value="0.23177083333333334" />
         <entry key="..\:/Users/diogo/Bet20/IPVC/Artip/app/src/main/res/drawable/baseline_map_24.xml" value="0.23177083333333334" />
         <entry key="..\:/Users/diogo/Bet20/IPVC/Artip/app/src/main/res/drawable/cog.xml" value="0.24444444444444444" />
@@ -12,7 +33,8 @@
         <entry key="..\:/Users/diogo/Bet20/IPVC/Artip/app/src/main/res/layout/activity_main2.xml" value="0.215625" />
         <entry key="..\:/Users/diogo/Bet20/IPVC/Artip/app/src/main/res/layout/menu.xml" value="0.21927083333333333" />
         <entry key="..\:/Users/diogo/Bet20/IPVC/Artip/app/src/main/res/menu/bottom_nav_menu.xml" value="0.21927083333333333" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.340625" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/mainfadein.xml" value="0.34010416666666665" />
       </map>
     </option>
   </component>

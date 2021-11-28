@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "651831058203",
+    "project_id": "artip-01",
+    "storage_bucket": "artip-01.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:651831058203:android:05a6f7f2dd32ede26abdbe",
+        "android_client_info": {
+          "package_name": "estg.djr.artip"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "651831058203-0qegtdpp8th6jighkrg2cd08b0me5veu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVOVSta3y9-mESCCC5ZVp7xWkVYkUTYVE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "651831058203-0qegtdpp8th6jighkrg2cd08b0me5veu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

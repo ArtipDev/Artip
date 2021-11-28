@@ -10,4 +10,5 @@
     <string name="welcome_message">Welcome to Artip!</string>
     <string name="login_message">Login ;)</string>
     <string name="register_message">Or register!</string>
+    <string name="title_activity_dashboard">Dashboard</string>
 </resources>
