@@ -37,6 +37,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
 import estg.djr.artip.ui.theme.ArtipTheme
 import estg.djr.artip.ui.theme.NavButton
 import estg.djr.artip.ui.theme.SelectedNavButton
@@ -50,8 +51,9 @@ class LoginActivity : ComponentActivity() {
     }
 
     private lateinit var mAuth: FirebaseAuth
-    private lateinit var googleSignInClient: GoogleSignInClient
 
+    private lateinit var googleSignInClient: GoogleSignInClient
+    var db = FirebaseFirestore.getInstance();
 
     override fun onCreate(savedInstanceState : Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +72,7 @@ class LoginActivity : ComponentActivity() {
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
         mAuth = FirebaseAuth.getInstance()
+
         googleSignInClient.signOut()
     }
 
@@ -113,6 +116,23 @@ class LoginActivity : ComponentActivity() {
                     val isNew = task.result.additionalUserInfo!!.isNewUser
 
                         //se for novo, adicionar ao firebase
+
+                        if(isNew) {
+                            val user = hashMapOf(
+                                "nome" to mAuth.currentUser?.displayName.toString(),
+                                "email" to mAuth.currentUser?.email.toString(),
+                                "photoUrl" to mAuth.currentUser?.photoUrl.toString()
+                            )
+
+                            db.collection("users")
+                                .add(user)
+                                .addOnSuccessListener { documentReference ->
+                                    Log.d("FIREBASE", "DocumentSnapshot added with ID: ${documentReference.id}")
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.w("FIREBASE", "Error adding document", e)
+                                }
+                        }
 
                         val intent = Intent(this, Dashboard::class.java)
                         startActivity(intent)

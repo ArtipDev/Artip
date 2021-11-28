@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity(){
         setContentView(R.layout.activity_main)
 
         mAuth = FirebaseAuth.getInstance()
+        mAuth.signOut()
 
         val user = mAuth.currentUser
 
