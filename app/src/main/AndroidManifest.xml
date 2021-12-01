@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="estg.djr.artip">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -12,10 +12,31 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Artip">
         <activity
+            android:name=".FeedEntry"
+            android:exported="false"
+            android:label="@string/title_activity_feed_entry"
+            android:theme="@style/Theme.Artip.NoActionBar" />
+        <activity
+            android:name=".Profile"
+            android:exported="false"
+            android:label="@string/title_activity_profile"
+            android:theme="@style/Theme.Artip.NoActionBar" />
+        <activity
+            android:name=".Feed"
+            android:exported="false"
+            android:label="@string/title_activity_feed"
+            android:theme="@style/Theme.Artip.NoActionBar" />
+        <activity
             android:name=".Dashboard"
             android:exported="true"
             android:label="@string/title_activity_dashboard"
-            android:theme="@style/Theme.Artip.NoActionBar" />
+            android:theme="@style/Theme.Artip.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".Map"
             android:exported="true"
@@ -34,13 +55,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.Artip.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/Theme.Artip.NoActionBar"></activity>
     </application>
 
 </manifest>

@@ -7,29 +7,43 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.tooling.preview.Preview
 import estg.djr.artip.ui.theme.ArtipTheme
 
 class Dashboard : ComponentActivity() {
+
+    val nv = Navbar()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             ArtipTheme {
-                MainPage()
+                MainPage(nv)
             }
         }
     }
 
     @Preview(showBackground = true)
     @Composable
-    fun MainPage() {
+    fun MainPage(tabChange: Navbar = Navbar()) {
+        var vi: Boolean = true
+        val currentTab : Int = tabChange.tab.value
         Scaffold(
-            bottomBar = { BottomNavigationBar() }
+            bottomBar = { BottomNavigationBar(nv) },
         ) {
-            //Umacacos peulods
+            when(currentTab) {
+                1 -> {
+                    ProfileCompo(visible = false)
+                    FeedCompo(true)
+                }
+                2 -> {
+                    FeedCompo(visible = false)
+                    ProfileCompo(true)
+
+                }
+            }
+
         }
     }
 }
-

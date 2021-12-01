@@ -11,4 +11,7 @@
     <string name="login_message">Login ;)</string>
     <string name="register_message">Or register!</string>
     <string name="title_activity_dashboard">Dashboard</string>
+    <string name="title_activity_feed">Feed</string>
+    <string name="title_activity_profile">Profile</string>
+    <string name="title_activity_feed_entry">FeedEntry</string>
 </resources>

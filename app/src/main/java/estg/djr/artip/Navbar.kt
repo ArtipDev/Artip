@@ -34,6 +34,10 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import com.google.android.gms.common.util.CollectionUtils.listOf
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import estg.djr.artip.dataclasses.MutableParamsNavbar
@@ -42,20 +46,17 @@ import estg.djr.artip.ui.theme.ArtipTheme
 import estg.djr.artip.ui.theme.NavButton
 import estg.djr.artip.ui.theme.SelectedNavButton
 
-class Navbar : ComponentActivity() {
-    override fun onCreate(savedInstanceState : Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            ArtipTheme {
-               BottomNavigationBar()
-            }
-        }
-    }
+
+class Navbar : ViewModel() {
+
+    val tab: MutableState<Int> = mutableStateOf(1)
 }
 
 
 @Composable
-fun BottomNavigationBar() {
+fun BottomNavigationBar(tabChangeModel: Navbar = Navbar()) {
+
+    val currentTab : Int = tabChangeModel.tab.value
 
     var bgcolor by remember {
         mutableStateOf(listOf(Color.Red, Color.Blue, Color.Red, Color.Red, Color.Red))
@@ -95,6 +96,7 @@ fun BottomNavigationBar() {
             4 -> { defList[4] = MutableParamsNavbar(presencen, colorPressed)}
         }
         Log.d("Nav", defList.toString())
+        tabChangeModel.tab.value = x
         return defList
 
 
