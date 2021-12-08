@@ -65,7 +65,6 @@ fun Settings(name: String) {
                             Text(text = label)
                         }
                     }
-
             }
         }
     }
