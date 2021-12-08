@@ -30,11 +30,9 @@ class Feed : ComponentActivity() {
 fun FeedCompo(visible: Boolean) {
     if (visible) {
         Column() {
-
-                FeedEntry(name = "")
-                FeedEntry(name = "")
-                FeedEntry(name = "")
-
+                FeedEntry("Samuel Fox", "Hello guys Ill be doing some magic tricks today in aliados.")
+                FeedEntry("Robert Sha256", "10001 10 10001 100010101 01001 10010100 10101 100101 101 101010")
+                FeedEntry("Cunimbriga Astúria", "Soy astúriana e portuguesa pero no ablo portugues.")
         }
     }
 }

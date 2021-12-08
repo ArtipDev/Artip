@@ -31,11 +31,7 @@
             android:exported="true"
             android:label="@string/title_activity_dashboard"
             android:theme="@style/Theme.Artip.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".Map"
@@ -55,7 +51,13 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.Artip.NoActionBar"></activity>
+            android:theme="@style/Theme.Artip.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
