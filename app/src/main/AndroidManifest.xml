@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="estg.djr.artip">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Permissao Camera -->
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
         android:allowBackup="true"
@@ -53,7 +57,8 @@
             android:name=".Navbar"
             android:exported="true"
             android:label="@string/title_activity_navbar"
-            android:theme="@style/Theme.Artip.NoActionBar" />
+            android:theme="@style/Theme.Artip.NoActionBar"
+            tools:ignore="Instantiatable" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
