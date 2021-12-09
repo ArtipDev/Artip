@@ -9,7 +9,7 @@
     <com.budiyev.android.codescanner.CodeScannerView
         android:id="@+id/scanner_view"
         android:layout_width="match_parent"
-        android:layout_height="600dp"
+        android:layout_height="550dp"
         app:autoFocusButtonColor="@color/white"
         app:autoFocusButtonVisible="true"
         app:flashButtonColor="@color/white"
@@ -20,8 +20,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/scanner_view"
-        android:text="ScanCheck"
-        android:textSize="30sp"
+        android:text="Scan Value"
+        android:textSize="40sp"
         android:layout_centerHorizontal="true"
-        android:textColor="@color/purple_200"/>
+        android:textColor="#FF689B"/>
 </RelativeLayout>
