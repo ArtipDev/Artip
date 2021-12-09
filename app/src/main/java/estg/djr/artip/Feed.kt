@@ -5,10 +5,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import estg.djr.artip.ui.theme.ArtipTheme
 
@@ -41,6 +44,17 @@ fun FeedCompo(visible: Boolean) {
 @Composable
 fun DefaultPreview4() {
     ArtipTheme {
-        FeedCompo(true)
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            bottomBar = { InputMessage() }
+        ) {
+            FeedCompo(true)
+        }
     }
+}
+
+@Composable
+fun InputMessage() {
+    TextField(value = "Hello guys...", onValueChange = {},
+    modifier = Modifier.fillMaxWidth())
 }

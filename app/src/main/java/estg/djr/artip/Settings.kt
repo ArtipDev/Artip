@@ -37,39 +37,12 @@ class Settings : ComponentActivity() {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.N)
 @Composable
 fun Settings(name: String) {
-    var expanded by remember { mutableStateOf(false) }
-    val list = listOf("ENG", "PT")
-    var selectedItem by remember { mutableStateOf("ENG")}
-    var textFiledSize by remember { mutableStateOf(Size.Zero)}
-    Column() {
-        Row() {
-            OutlinedTextField(value = selectedItem, onValueChange = {selectedItem = it},
-                Modifier
-                    .fillMaxWidth()
-                    .onGloballyPositioned { coordinates ->
-                        textFiledSize = coordinates.size.toSize()
-                    },
-                label = { Text(text = "Select language")}
-            )
-            DropdownMenu(expanded = expanded,
-                onDismissRequest = { expanded = false },
-                modifier = Modifier.fillMaxWidth()) {
-                    list.forEach { label ->
-                        DropdownMenuItem(onClick = {
-                            selectedItem = label
-                            expanded = false
-                        }) {
-                            Text(text = label)
-                        }
-                    }
-            }
-        }
-    }
+    Text(text=name)
 }
 
+@Composable
 fun LanguageSelection() {
     val radioOptions = ArrayList<String>()
     radioOptions.add("ENG")
