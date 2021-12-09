@@ -115,30 +115,33 @@ class LoginActivity : ComponentActivity() {
                 if (task.isSuccessful) {
                     val isNew = task.result.additionalUserInfo!!.isNewUser
 
-                        //se for novo, adicionar ao firebase
-
                         if(isNew) {
+
                             val user = hashMapOf(
-                                "nome" to mAuth.currentUser?.displayName.toString(),
-                                "email" to mAuth.currentUser?.email.toString(),
-                                "photoUrl" to mAuth.currentUser?.photoUrl.toString()
+                                "isArtist" to false,
+                                "name" to mAuth.currentUser?.displayName.toString(),
+                                "imageProfile" to mAuth.currentUser?.photoUrl.toString(),
                             )
 
                             db.collection("users")
-                                .add(user)
-                                .addOnSuccessListener { documentReference ->
-                                    Log.d("FIREBASE", "DocumentSnapshot added with ID: ${documentReference.id}")
+                                .document(mAuth.currentUser?.uid.toString())
+                                .set(user)
+                                .addOnSuccessListener {
+                                    val intent = Intent(this, Dashboard::class.java)
+                                    startActivity(intent)
+                                    finish()
+                                    overridePendingTransition( 0, R.anim.fade_out );
                                 }
-                                .addOnFailureListener { e ->
-                                    Log.w("FIREBASE", "Error adding document", e)
+                                .addOnFailureListener {
+                                    Log.w("FIREBASE", "Error adding document")
                                 }
+
+                        } else {
+                            val intent = Intent(this, Dashboard::class.java)
+                            startActivity(intent)
+                            finish()
+                            overridePendingTransition( 0, R.anim.fade_out );
                         }
-
-                        val intent = Intent(this, Dashboard::class.java)
-                        startActivity(intent)
-                        finish()
-                        overridePendingTransition( 0, R.anim.fade_out );
-
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w("SignInActivity", "signInWithCredential:failure", task.exception)
