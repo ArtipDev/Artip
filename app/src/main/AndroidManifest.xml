@@ -12,6 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Artip">
         <activity
+<<<<<<< HEAD
             android:name=".FeedEntry"
             android:exported="false"
             android:label="@string/title_activity_feed_entry"
@@ -26,6 +27,10 @@
             android:exported="false"
             android:label="@string/title_activity_feed"
             android:theme="@style/Theme.Artip.NoActionBar" />
+=======
+            android:name=".Qr"
+            android:exported="true" />
+>>>>>>> QRCode
         <activity
             android:name=".Dashboard"
             android:exported="true"
