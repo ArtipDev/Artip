@@ -49,7 +49,7 @@ import estg.djr.artip.ui.theme.SelectedNavButton
 
 class Navbar : ViewModel() {
 
-    val tab: MutableState<Int> = mutableStateOf(1)
+    val tab: MutableState<Int> = mutableStateOf(0)
 }
 
 

@@ -33,15 +33,23 @@ class Dashboard : ComponentActivity() {
             bottomBar = { BottomNavigationBar(nv) },
         ) {
             when(currentTab) {
+                0 -> {
+                    GoogleMap(visible = true)
+                    ProfileCompo(false)
+                    FeedCompo(visible = false)
+                }
                 1 -> {
+                    GoogleMap(visible = false)
                     ProfileCompo(visible = false)
                     FeedCompo(true)
                 }
                 2 -> {
                     FeedCompo(visible = false)
                     ProfileCompo(true)
+                    GoogleMap(visible = false)
 
                 }
+
             }
 
         }
