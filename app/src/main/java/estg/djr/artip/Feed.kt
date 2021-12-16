@@ -3,17 +3,18 @@ package estg.djr.artip
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusEvent
+import androidx.compose.ui.layout.AlignmentLine
 import androidx.compose.ui.tooling.preview.Preview
 import estg.djr.artip.ui.theme.ArtipTheme
+import org.intellij.lang.annotations.JdkConstants
 
 class Feed : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,11 +45,10 @@ fun FeedCompo(visible: Boolean) {
 @Composable
 fun DefaultPreview4() {
     ArtipTheme {
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            bottomBar = { InputMessage() }
-        ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
             FeedCompo(true)
+            AddItemToFeed()
+            InputMessage()
         }
     }
 }
@@ -57,4 +57,13 @@ fun DefaultPreview4() {
 fun InputMessage() {
     TextField(value = "Hello guys...", onValueChange = {},
     modifier = Modifier.fillMaxWidth())
+}
+
+@Composable
+fun AddItemToFeed() {
+    Box(Modifier.fillMaxWidth()) {
+      Button(onClick = { /*TODO*/ }) {
+          Text(text = "+")
+      }  
+    }
 }
