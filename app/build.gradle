@@ -2,11 +2,12 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'com.google.gms.google-services'
-    id 'kotlin-android-extensions'
 }
 
 android {
     compileSdk 31
+
+
 
     defaultConfig {
         applicationId "estg.djr.artip"
@@ -40,8 +41,8 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion compose_version
-        kotlinCompilerVersion '1.5.10'
+        kotlinCompilerExtensionVersion "1.1.0-rc01"
+        kotlinCompilerVersion '1.5.31'
     }
     packagingOptions {
         resources {
@@ -68,6 +69,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:24.0.0'
     implementation("io.coil-kt:coil-compose:1.4.0")
     implementation 'com.google.firebase:firebase-auth-ktx:20.0.4'
+    implementation 'androidx.preference:preference:1.1.1'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'

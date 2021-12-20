@@ -37,17 +37,25 @@ class Dashboard : ComponentActivity() {
                     GoogleMap(visible = true)
                     ProfileCompo(false)
                     FeedCompo(visible = false)
+                    SettingsCompo(visible = false)
                 }
                 1 -> {
                     GoogleMap(visible = false)
                     ProfileCompo(visible = false)
                     FeedCompo(true)
+                    SettingsCompo(visible = false)
                 }
                 2 -> {
                     FeedCompo(visible = false)
                     ProfileCompo(true)
                     GoogleMap(visible = false)
-
+                    SettingsCompo(visible = false)
+                }
+                4 -> {
+                    SettingsCompo(visible = true)
+                    FeedCompo(visible = false)
+                    GoogleMap(visible = false)
+                    ProfileCompo(visible = false)
                 }
 
             }

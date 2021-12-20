@@ -7,10 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.expandHorizontally
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -20,8 +17,27 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import androidx.compose.ui.viewinterop.AndroidView
 import com.google.android.gms.common.util.CollectionUtils.listOf
 import estg.djr.artip.ui.theme.ArtipTheme
+import android.R
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.Space
+import androidx.compose.foundation.background
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Center
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.VerticalAlignmentLine
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
+import estg.djr.artip.ui.theme.Artip_pink
+import estg.djr.artip.ui.theme.bg_main
+
 
 class Settings : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,22 +46,81 @@ class Settings : ComponentActivity() {
             ArtipTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    Settings("Android")
+
                 }
             }
         }
     }
 }
 
-@Composable
-fun Settings(name: String) {
-    Text(text=name)
-}
 
 @Composable
+fun SettingsCompo(visible: Boolean) {
+    var notifications by remember { mutableStateOf(false) }
+    val text = remember { mutableStateOf(TextFieldValue("")) }
+    if(visible){
+        Column(
+            Modifier
+                .background(bg_main)
+                .wrapContentSize(Center)
+                .fillMaxSize()
+        ){
+            Row(modifier = Modifier.padding(40.dp)){
+                Text(text = "Settings",
+                Modifier.wrapContentHeight(CenterVertically),
+                    color = Artip_pink,
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Bold)
+            }
+            Row(
+                Modifier
+                    .wrapContentHeight(CenterVertically)
+                    .padding(5.dp),
+                    ){
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(text = "Search Radius",
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .wrapContentHeight(CenterVertically),
+                        color = Color.White)
+                }
+
+                TextField(value = text.value,
+                    onValueChange = {text.value = it},
+                modifier = Modifier
+                    .wrapContentWidth(CenterHorizontally)
+                    .padding(10.dp, 0.dp, 10.dp, 0.dp)
+                    .width(60.dp))
+                Text(text = "KM",
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .wrapContentHeight(CenterVertically),
+                    color = Color.White)
+            }
+            Spacer(modifier = Modifier.size(20.dp))
+            Row(
+                Modifier
+                    .wrapContentHeight(CenterVertically)
+                    .padding(5.dp, 20.dp, 5.dp, 20.dp)) {
+                Text(text = "Send Notifications",
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .wrapContentHeight(CenterVertically),
+                    color = Color.White)
+                Checkbox(checked = notifications, onCheckedChange = {notifications = !notifications})
+            }
+            Row(){
+
+            }
+    }
+    }
+}
+
+@Preview
+@Composable
 fun LanguageSelection() {
-    val radioOptions = ArrayList<String>()
-    radioOptions.add("ENG")
-    radioOptions.add("PT")
-    val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[2])}
+    SettingsCompo(true)
 }
