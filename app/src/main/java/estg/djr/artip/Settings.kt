@@ -21,6 +21,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.google.android.gms.common.util.CollectionUtils.listOf
 import estg.djr.artip.ui.theme.ArtipTheme
 import android.R
+import android.content.Context
+import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Space
@@ -42,6 +44,9 @@ import estg.djr.artip.ui.theme.bg_main
 class Settings : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+8
+
+
         setContent {
             ArtipTheme {
                 // A surface container using the 'background' color from the theme
@@ -55,15 +60,19 @@ class Settings : ComponentActivity() {
 
 
 @Composable
-fun SettingsCompo(visible: Boolean) {
+fun SettingsCompo(visible: Boolean, editor: SharedPreferences.Editor) {
+
     var notifications by remember { mutableStateOf(false) }
     val text = remember { mutableStateOf(TextFieldValue("")) }
+
     if(visible){
         Column(
-            Modifier
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
                 .background(bg_main)
                 .wrapContentSize(Center)
                 .fillMaxSize()
+                .padding(20.dp)
         ){
             Row(modifier = Modifier.padding(40.dp)){
                 Text(text = "Settings",
@@ -113,7 +122,15 @@ fun SettingsCompo(visible: Boolean) {
                 Checkbox(checked = notifications, onCheckedChange = {notifications = !notifications})
             }
             Row(){
-
+                Button(onClick = {
+                    val num = text.component1().text.toInt()
+                    editor.putBoolean("notificationOn", notifications)
+                    editor.putInt("radius", num)
+                    editor.apply()
+                    editor.commit()
+                }) {
+                    Text(text = "Salvar")
+                }
             }
     }
     }
@@ -122,5 +139,6 @@ fun SettingsCompo(visible: Boolean) {
 @Preview
 @Composable
 fun LanguageSelection() {
-    SettingsCompo(true)
+
+
 }

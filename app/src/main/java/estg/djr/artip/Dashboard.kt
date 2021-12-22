@@ -1,5 +1,7 @@
 package estg.djr.artip
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,10 +15,15 @@ import estg.djr.artip.ui.theme.ArtipTheme
 
 class Dashboard : ComponentActivity() {
 
+    private val sharedPrefFile = "preferences"
     val nv = Navbar()
+    lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        sharedPreferences = this.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+
         setContent {
             ArtipTheme {
                 MainPage(nv)
@@ -37,22 +44,22 @@ class Dashboard : ComponentActivity() {
                     GoogleMap(visible = true)
                     ProfileCompo(false)
                     FeedCompo(visible = false)
-                    SettingsCompo(visible = false)
+                    SettingsCompo(visible = false, sharedPreferences.edit())
                 }
                 1 -> {
                     GoogleMap(visible = false)
                     ProfileCompo(visible = false)
                     FeedCompo(true)
-                    SettingsCompo(visible = false)
+                    SettingsCompo(visible = false, sharedPreferences.edit())
                 }
                 2 -> {
                     FeedCompo(visible = false)
                     ProfileCompo(true)
                     GoogleMap(visible = false)
-                    SettingsCompo(visible = false)
+                    SettingsCompo(visible = false, sharedPreferences.edit())
                 }
                 4 -> {
-                    SettingsCompo(visible = true)
+                    SettingsCompo(visible = true, sharedPreferences.edit())
                     FeedCompo(visible = false)
                     GoogleMap(visible = false)
                     ProfileCompo(visible = false)
