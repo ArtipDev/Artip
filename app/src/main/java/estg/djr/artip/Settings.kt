@@ -21,8 +21,11 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.google.android.gms.common.util.CollectionUtils.listOf
 import estg.djr.artip.ui.theme.ArtipTheme
 import android.R
+import android.app.Activity
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Space
@@ -44,7 +47,7 @@ import estg.djr.artip.ui.theme.bg_main
 class Settings : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-8
+
 
 
         setContent {
@@ -60,10 +63,15 @@ class Settings : ComponentActivity() {
 
 
 @Composable
-fun SettingsCompo(visible: Boolean, editor: SharedPreferences.Editor) {
+fun SettingsCompo(visible: Boolean, editor: SharedPreferences.Editor, activity: Activity) {
 
-    var notifications by remember { mutableStateOf(false) }
-    val text = remember { mutableStateOf(TextFieldValue("")) }
+    val sharedPrefs = activity.getPreferences(MODE_PRIVATE)
+
+    val _notifications = sharedPrefs.getBoolean("notificationOn", false)
+    val radiusInKm = sharedPrefs.getInt("radius", 5)
+
+    var notifications by remember { mutableStateOf(_notifications) }
+    val text = remember { mutableStateOf(TextFieldValue(radiusInKm.toString())) }
 
     if(visible){
         Column(
@@ -123,11 +131,9 @@ fun SettingsCompo(visible: Boolean, editor: SharedPreferences.Editor) {
             }
             Row(){
                 Button(onClick = {
+                    Log.d("SHARED PREFERENCES", "Clicked for shared preferences")
                     val num = text.component1().text.toInt()
-                    editor.putBoolean("notificationOn", notifications)
-                    editor.putInt("radius", num)
-                    editor.apply()
-                    editor.commit()
+
                 }) {
                     Text(text = "Salvar")
                 }

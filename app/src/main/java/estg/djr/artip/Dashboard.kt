@@ -1,7 +1,10 @@
 package estg.djr.artip
 
+import android.R
+import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Resources
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,11 +21,13 @@ class Dashboard : ComponentActivity() {
     private val sharedPrefFile = "preferences"
     val nv = Navbar()
     lateinit var sharedPreferences: SharedPreferences
+    lateinit var activity: Activity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         sharedPreferences = this.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+        activity = this
 
         setContent {
             ArtipTheme {
@@ -44,22 +49,22 @@ class Dashboard : ComponentActivity() {
                     GoogleMap(visible = true)
                     ProfileCompo(false)
                     FeedCompo(visible = false)
-                    SettingsCompo(visible = false, sharedPreferences.edit())
+                    SettingsCompo(visible = false, sharedPreferences.edit(), activity = activity)
                 }
                 1 -> {
                     GoogleMap(visible = false)
                     ProfileCompo(visible = false)
                     FeedCompo(true)
-                    SettingsCompo(visible = false, sharedPreferences.edit())
+                    SettingsCompo(visible = false, sharedPreferences.edit(), activity = activity)
                 }
                 2 -> {
                     FeedCompo(visible = false)
                     ProfileCompo(true)
                     GoogleMap(visible = false)
-                    SettingsCompo(visible = false, sharedPreferences.edit())
+                    SettingsCompo(visible = false, sharedPreferences.edit(), activity = activity)
                 }
                 4 -> {
-                    SettingsCompo(visible = true, sharedPreferences.edit())
+                    SettingsCompo(visible = true, sharedPreferences.edit(), activity = activity)
                     FeedCompo(visible = false)
                     GoogleMap(visible = false)
                     ProfileCompo(visible = false)
