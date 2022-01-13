@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
+import estg.djr.artip.dataclasses.PostData
 import estg.djr.artip.ui.theme.ArtipTheme
 import estg.djr.artip.ui.theme.Artip_pink
 
@@ -35,7 +36,7 @@ class FeedEntry : ComponentActivity() {
             ArtipTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    FeedEntry("Android", "ahh")
+
                 }
             }
         }
@@ -43,7 +44,7 @@ class FeedEntry : ComponentActivity() {
 }
 
 @Composable
-fun FeedEntry(name: String, message: String) {
+fun Feed_Entry(pd: PostData) {
     Column(
         Modifier
             .padding(10.dp)
@@ -62,12 +63,12 @@ fun FeedEntry(name: String, message: String) {
             Column() {
                 Text(
                     modifier = Modifier.padding(10.dp),
-                    text = name,
+                    text = pd.name,
                     fontWeight = FontWeight.Bold
                 )
                 Text(modifier = Modifier.padding(10.dp, 0.dp, 20.dp, 10.dp),
                     textAlign = TextAlign.Justify,
-                    text = message)
+                    text = pd.text)
             }
             
         }
@@ -78,6 +79,6 @@ fun FeedEntry(name: String, message: String) {
 @Composable
 fun DefaultPreview6() {
     ArtipTheme {
-        FeedEntry("Android", "ahhh")
+        //FeedEntry("Android", "ahhh")
     }
 }

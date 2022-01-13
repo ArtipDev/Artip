@@ -1,19 +1,33 @@
 package estg.djr.artip
 
+import android.content.ContentProvider
+import android.content.Context
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
+import com.google.android.gms.common.util.CollectionUtils.listOf
+import estg.djr.artip.dataclasses.PostData
 import estg.djr.artip.ui.theme.ArtipTheme
+import estg.djr.artip.ui.theme.Artip_pink
+import java.util.*
+import kotlin.collections.ArrayList
 
 class Feed : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,7 +36,7 @@ class Feed : ComponentActivity() {
             ArtipTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    FeedCompo(true)
+
                 }
             }
         }
@@ -30,12 +44,47 @@ class Feed : ComponentActivity() {
 }
 
 @Composable
-fun FeedCompo(visible: Boolean) {
+fun FeedCompo(visible: Boolean, postList: List<PostData>) {
+
+    val textState = remember { mutableStateOf(TextFieldValue()) }
+    var lines = postList
+
+
     if (visible) {
-        Column() {
-                FeedEntry("Samuel Fox", "Hello guys Ill be doing some magic tricks today in aliados.")
-                FeedEntry("Robert Sha256", "10001 10 10001 100010101 01001 10010100 10101 100101 101 101010")
-                FeedEntry("Cunimbriga Astúria", "Soy astúriana e portuguesa pero no ablo portugues.")
+        Scaffold(
+            bottomBar = { Box(modifier = Modifier.padding(10.dp)) {
+
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(modifier = Modifier.fillMaxWidth()) {
+            TextField(value = textState.value, onValueChange = {textState.value = it},
+                modifier = Modifier
+                    .offset(0.dp, (-80).dp))
+            Button(onClick = {
+                {/**TODO**/}
+            },
+                Modifier
+                    .offset(0.dp, (-80).dp)
+                    .width(60.dp)
+                    .background(color = Artip_pink))
+
+            {
+                Text(text = ">",
+                    fontSize = 30.sp,
+                    color = Color.Black,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .padding(0.dp)
+                )
+            }
+        }
+    }
+            } }
+        ) {
+            LazyColumn(){
+                items(lines){ l ->
+                        Feed_Entry(pd = l)
+                    }
+            }
         }
     }
 }
@@ -43,18 +92,15 @@ fun FeedCompo(visible: Boolean) {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview4() {
+    val ls:MutableList<PostData> = Arrays.asList(PostData("JoelDoe", "Hello Everyone!"))
     ArtipTheme {
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            bottomBar = { InputMessage() }
-        ) {
-            FeedCompo(true)
-        }
+        FeedCompo(true, ls)
     }
 }
 
 @Composable
-fun InputMessage() {
-    TextField(value = "Hello guys...", onValueChange = {},
-    modifier = Modifier.fillMaxWidth())
+fun InputMessage(pl: MutableList<PostData>) {
+
+
+    
 }
