@@ -1,47 +1,31 @@
 package estg.djr.artip
 
-import android.icu.number.NumberFormatter.with
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.annotation.RequiresApi
-import androidx.compose.animation.expandHorizontally
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.toSize
-import androidx.compose.ui.viewinterop.AndroidView
-import com.google.android.gms.common.util.CollectionUtils.listOf
 import estg.djr.artip.ui.theme.ArtipTheme
-import android.R
-import android.app.Activity
-import android.content.Context
-import android.content.Context.MODE_PRIVATE
-import android.content.SharedPreferences
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.widget.Space
 import androidx.compose.foundation.background
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.VerticalAlignmentLine
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
+import estg.djr.artip.data.SavePrefNotifications
+import estg.djr.artip.data.SavePrefRadius
 import estg.djr.artip.ui.theme.Artip_pink
 import estg.djr.artip.ui.theme.bg_main
+import kotlinx.coroutines.launch
 
 
 class Settings : ComponentActivity() {
@@ -63,18 +47,22 @@ class Settings : ComponentActivity() {
 
 
 @Composable
-fun SettingsCompo(visible: Boolean, editor: SharedPreferences.Editor, activity: Activity) {
+fun SettingsCompo(visible: Boolean) {
 
-    val sharedPrefs = activity.getPreferences(MODE_PRIVATE)
+    val context = LocalContext.current
 
-    val _notifications = sharedPrefs.getBoolean("notificationOn", false)
-    val radiusInKm = sharedPrefs.getInt("radius", 5)
+    val scope = rememberCoroutineScope()
+    val dataRadius = SavePrefRadius(context)
+    val dataNotifications = SavePrefNotifications(context)
 
-    var notifications by remember { mutableStateOf(_notifications) }
-    val text = remember { mutableStateOf(TextFieldValue(radiusInKm.toString())) }
+    var radius by rememberSaveable { mutableStateOf("") }
+
+    val savedRadius = dataRadius.getRadiusPref.collectAsState(initial = "")
+    val savedNotifications = dataNotifications.getNotPref.collectAsState(initial = false)
 
     if(visible){
         Column(
+
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .background(bg_main)
@@ -82,6 +70,7 @@ fun SettingsCompo(visible: Boolean, editor: SharedPreferences.Editor, activity: 
                 .fillMaxSize()
                 .padding(20.dp)
         ){
+
             Row(modifier = Modifier.padding(40.dp)){
                 Text(text = "Settings",
                 Modifier.wrapContentHeight(CenterVertically),
@@ -105,8 +94,10 @@ fun SettingsCompo(visible: Boolean, editor: SharedPreferences.Editor, activity: 
                         color = Color.White)
                 }
 
-                TextField(value = text.value,
-                    onValueChange = {text.value = it},
+                TextField(value = savedRadius.value!!,
+                    onValueChange = {scope.launch {
+                        dataRadius.saveRadius(it)
+                    }},
                 modifier = Modifier
                     .wrapContentWidth(CenterHorizontally)
                     .padding(10.dp, 0.dp, 10.dp, 0.dp)
@@ -127,16 +118,9 @@ fun SettingsCompo(visible: Boolean, editor: SharedPreferences.Editor, activity: 
                         .padding(5.dp)
                         .wrapContentHeight(CenterVertically),
                     color = Color.White)
-                Checkbox(checked = notifications, onCheckedChange = {notifications = !notifications})
-            }
-            Row(){
-                Button(onClick = {
-                    Log.d("SHARED PREFERENCES", "Clicked for shared preferences")
-                    val num = text.component1().text.toInt()
-
-                }) {
-                    Text(text = "Salvar")
-                }
+                Checkbox(checked = savedNotifications.value!!, onCheckedChange = {
+                    scope.launch { dataNotifications.saveNotifications(!savedNotifications.value!!) }
+                })
             }
     }
     }
@@ -145,6 +129,6 @@ fun SettingsCompo(visible: Boolean, editor: SharedPreferences.Editor, activity: 
 @Preview
 @Composable
 fun LanguageSelection() {
-
+    SettingsCompo(visible = true)
 
 }
