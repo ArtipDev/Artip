@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">artip</string>
+    <string name="text_performance">A atuar em</string>
+    <string name="text_location">Localização</string>
+    <string name="title_activity_settings">Definições</string>
+    <string name="title_activity_profile">Perfil</string>
+    <string name="title_activity_feed">Feed</string>
+    <string name="login_message">Entrar</string>
+    <string name="welcome_message">Bem-vindo ao Artip!</string>
+    <string name="text_feed_place">Bem-vindo a</string>
+    <string name="text_feed_memories">Memórias</string>
+    <string name="text_artists_bio">Biografia</string>
+    <string name="text_artists_galery">Galeria</string>
+    <string name="text_contributions_tipMessage">Gostou da atuação? Porque não deixar um contributo?</string>
+    <string name="text_contributions_qr">Aponte para o Qr Code do artista!</string>
+    <string name="text_contributions_amount">Montante a contribuir</string>
+    <string name="text_contributions_payment">Opções de pagamento</string>
+    <string name="text_contributions_thankYouMessage">diz</string>
+    <string name="text_profile_name">Nome</string>
+    <string name="text_profile_favArtists">Artistas favoritos</string>
+    <string name="register_message">Ou Inscrevete-te</string>
+</resources>

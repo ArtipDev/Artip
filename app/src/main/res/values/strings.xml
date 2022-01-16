@@ -1,18 +1,33 @@
 <resources>
     <string name="app_name">artip</string>
-    <string name="title_activity_main2">MainActivity2</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
-    <string name="title_activity_navbar">Navbar</string>
-    <string name="title_activity_login">LoginActivity</string>
-    <string name="title_activity_map">Map</string>
+    <string name="title_activity_main2" translatable="false">MainActivity2</string>
+    <string name="title_home" translatable="false">Home</string>
+    <string name="title_dashboard" translatable="false">Dashboard</string>
+    <string name="title_notifications" translatable="false">Notifications</string>
+    <string name="title_activity_navbar" translatable="false">Navbar</string>
+    <string name="title_activity_login" translatable="false">LoginActivity</string>
+    <string name="title_activity_map" translatable="false">Map</string>
     <string name="welcome_message">Welcome to Artip!</string>
-    <string name="login_message">Entrar</string>
+    <string name="login_message">Enter</string>
     <string name="register_message">Or register!</string>
-    <string name="title_activity_dashboard">Dashboard</string>
+    <string name="title_activity_dashboard" translatable="false">Dashboard</string>
     <string name="title_activity_feed">Feed</string>
     <string name="title_activity_profile">Profile</string>
-    <string name="title_activity_feed_entry">FeedEntry</string>
+    <string name="title_activity_feed_entry" translatable="false">FeedEntry</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="text_performance">Performing in</string>
+    <string name="text_location">Location</string>
+    <string name="text_feed_place">Welcome to</string>
+    <string name="text_feed_memories">Memories</string>
+    <string name="text_artists_bio">Bio</string>
+    <string name="text_artists_galery">Galery</string>
+    <string name="text_contributions_tipMessage">Did you like the performance? Why not leave a contribution?</string>
+    <string name="text_contributions_qr">Scan the artist\'s Qr Code!</string>
+    <string name="text_contributions_amount">Amount to contribute</string>
+    <string name="text_contributions_payment">Payment options</string>
+    <string name="text_contributions_thankYouMessage">says</string>
+    <string name="text_profile_name">Name</string>
+    <string name="text_profile_email" translatable="false">email</string>
+    <string name="text_profile_password" translatable="false">password</string>
+    <string name="text_profile_favArtists">Starred artists</string>
 </resources>
