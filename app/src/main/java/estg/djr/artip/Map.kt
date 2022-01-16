@@ -86,12 +86,15 @@ fun GoogleMap(visible : Boolean) {
                     val markerOptionsDestination = MarkerOptions()
                         .title("Porto")
                         .position(destination)
+
                     map.addMarker(markerOptionsDestination)
 
 
                 }
             }
         }
+
+        mapView.setOnClickListener({})
     }
 
 }
