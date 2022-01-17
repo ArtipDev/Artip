@@ -10,6 +10,7 @@ import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,9 +18,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -60,7 +63,13 @@ fun FeedCompo(visible: Boolean, postList: List<PostData>) {
 
     val context = LocalContext.current
 
+    val posts = remember {mutableStateListOf(DataProvider.DataProvider.postList)}
+
+
+
     var l: Location?
+
+    val listState = rememberLazyListState()
 
     val longitude = remember { mutableStateOf(12.0) }
     val latitude = remember { mutableStateOf(-14.0) }
@@ -101,34 +110,6 @@ fun FeedCompo(visible: Boolean, postList: List<PostData>) {
 
     if (visible) {
         Scaffold(
-            bottomBar = { Box(modifier = Modifier.padding(10.dp)) {
-
-    Column(modifier = Modifier.fillMaxWidth()) {
-
-        Row(modifier = Modifier.fillMaxWidth()) {
-            TextField(value = textState.value, onValueChange = {textState.value = it},
-                modifier = Modifier
-                    .offset(0.dp, (-80).dp))
-            Button(onClick = {
-                {/**TODO**/}
-            },
-                Modifier
-                    .offset(0.dp, (-80).dp)
-                    .width(60.dp)
-                    .background(color = Artip_pink))
-
-            {
-                Text(text = ">",
-                    fontSize = 30.sp,
-                    color = Color.Black,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .padding(0.dp)
-                )
-            }
-        }
-    }
-            } }
         ) {
             Column(modifier = Modifier
                 .fillMaxWidth()) {
@@ -140,13 +121,32 @@ fun FeedCompo(visible: Boolean, postList: List<PostData>) {
                     Text(text = "Bem-vindo a " + welcomeText.value)
                 }
                 Spacer(Modifier.size(10.dp))
-                LazyColumn(){
-                    items(lines){ l ->
-                        Feed_Entry(pd = l)
+                Box(Modifier.fillMaxSize()){
+                    LazyColumn(
+                    ){
+                        items(DataProvider.DataProvider.postList){ l ->
+                            Feed_Entry(pd = l)
+                        }
+                    }
+                    Row(modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .offset(0.dp, -80.dp)
+                        .padding(20.dp)
+                        .background(Artip_pink)){
+                        TextField(value = textState.value, onValueChange = {textState.value = it}, Modifier.padding(10.dp))
+                        Spacer(Modifier.size(10.dp))
+                        Box(Modifier.wrapContentSize()
+                            .padding(0.dp, 20.dp, 0.dp, 20.dp)) {
+                            Button(onClick = {
+                                DataProvider.DataProvider.postList.add(PostData("random", textState.value.text))
+                            }, Modifier.align(Alignment.Center)) {
+                                Text(text = ">")
+                            }
+                        }
+
                     }
                 }
             }
-
         }
     }
 }
