@@ -30,9 +30,9 @@ class Dashboard : ComponentActivity() {
     @Composable
     fun MainPage(tabChange: Navbar = Navbar()) {
         val list: List<PostData> =
-            Arrays.asList(PostData("JohnDoe", "Um doid três"),
-                PostData("JohnDoe", "Um doid três"),
-                PostData("JohnDoe", "Um doid três"))
+            Arrays.asList(PostData("123123","JohnDoe", "Um doid três", "https://lh3.googleusercontent.com/a/AATXAJyEBAfnbxsRDXsmqzTETt6A7vhrzVqIQIA9yAMx=s96-c"),
+                PostData("123123","JohnDoe", "Um doid três", "https://lh3.googleusercontent.com/a/AATXAJyEBAfnbxsRDXsmqzTETt6A7vhrzVqIQIA9yAMx=s96-c"),
+                PostData("123123","JohnDoe", "Um doid três", "https://lh3.googleusercontent.com/a/AATXAJyEBAfnbxsRDXsmqzTETt6A7vhrzVqIQIA9yAMx=s96-c"))
 
         var vi: Boolean = true
         val currentTab : Int = tabChange.tab.value

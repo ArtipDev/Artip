@@ -7,12 +7,7 @@ class DataProvider {
 
     object DataProvider {
 
-        var postList = mutableStateListOf<PostData>(
-            PostData("Diogo", "Olá"),
-            PostData("Ricardo", "Adeus"),
-            PostData("João", "Olá outra vez!")
-        )
-
+        var postList = mutableStateListOf<PostData>()
     }
 
 }

@@ -1,10 +1,12 @@
 package estg.djr.artip
 
 import android.Manifest
+import android.R.attr
 import android.app.Activity
 import android.content.ContentProvider
 import android.content.Context
 import android.content.Context.LOCATION_SERVICE
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
@@ -37,15 +39,85 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
 import com.google.android.gms.common.util.CollectionUtils.listOf
 import com.google.android.gms.location.LocationServices
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import estg.djr.artip.dataclasses.PostData
 import estg.djr.artip.ui.theme.ArtipTheme
 import estg.djr.artip.ui.theme.Artip_pink
 import java.util.*
 import kotlin.collections.ArrayList
+import androidx.annotation.NonNull
+
+import com.google.android.gms.tasks.OnFailureListener
+
+import com.google.firebase.firestore.DocumentReference
+
+import com.google.android.gms.tasks.OnSuccessListener
+
+import android.R.attr.data
+import android.R.attr.targetActivity
+import androidx.compose.material.SnackbarDefaults.backgroundColor
+import com.google.firebase.auth.FirebaseAuth
+import androidx.compose.material.AlertDialog
+
+
+var db = FirebaseFirestore.getInstance();
+var mAuth = FirebaseAuth.getInstance()
+var showAlert = false;
+
+
+
+object loadSingleTon {
+    init {
+        val docRef = db.collection("posts").orderBy("createdAt", Query.Direction.DESCENDING).limit(50)
+
+        docRef.addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                return@addSnapshotListener
+            }
+            if (snapshot != null) {
+                DataProvider.DataProvider.postList.clear()
+                val documents = snapshot.documents
+                if(documents.size!=0) {
+                    for (document in documents) {
+                        var documentId = document.id
+                        var userPost = document.get("data")
+                        var username = document.get("username")
+                        var userPhoto = document.get("userPhoto")
+                        DataProvider.DataProvider.postList.add(
+                            PostData(
+                                documentId.toString(),
+                                username.toString(),
+                                userPost.toString(),
+                                userPhoto.toString()
+                            )
+                        )
+                    }
+                } else {
+                    DataProvider.DataProvider.postList.add(PostData(
+                            "xxxxxx",
+                            "Sistema",
+                            "De momento, não existem posts!",
+                            "null"
+                        ))
+                }
+            } else {
+                DataProvider.DataProvider.postList.add(PostData(
+                    "xxxxxx",
+                    "Sistema",
+                    "De momento, não existem posts!",
+                    "null"
+                ))
+            }
+        }
+    }
+}
 
 class Feed : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             ArtipTheme {
                 // A surface container using the 'background' color from the theme
@@ -54,17 +126,44 @@ class Feed : ComponentActivity() {
                 }
             }
         }
+
     }
 }
+
+fun insertPost(context: Context, text: String) {
+    val timestramp = FieldValue.serverTimestamp();
+    val user = mAuth.currentUser!!
+    val displaName =  user.displayName.toString()
+    val photoUrl = user.photoUrl.toString()
+    val uid = user.uid.toString()
+
+    val postData = hashMapOf(
+        "createdAt" to timestramp,
+        "data" to text,
+        "user_uid" to uid,
+        "username" to displaName,
+        "userPhoto" to photoUrl
+    )
+
+    db.collection("posts")
+        .add(postData)
+        .addOnSuccessListener { documentReference ->
+          Log.d("DATA", "ADDED")
+            Toast.makeText(context, "Post criado com sucesso!", Toast.LENGTH_SHORT).show()
+        }
+        .addOnFailureListener { e -> Log.w("INSERIR", "Error adding document", e) }
+}
+
 
 
 @Composable
 fun FeedCompo(visible: Boolean, postList: List<PostData>) {
 
+    loadSingleTon
+
     val context = LocalContext.current
 
-    val posts = remember {mutableStateListOf(DataProvider.DataProvider.postList)}
-
+    val posts = remember { mutableStateListOf(DataProvider.DataProvider.postList) }
 
 
     var l: Location?
@@ -74,7 +173,8 @@ fun FeedCompo(visible: Boolean, postList: List<PostData>) {
     val longitude = remember { mutableStateOf(12.0) }
     val latitude = remember { mutableStateOf(-14.0) }
 
-    val mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+
+    /*val mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
     if (ActivityCompat.checkSelfPermission(
             context,
@@ -96,7 +196,7 @@ fun FeedCompo(visible: Boolean, postList: List<PostData>) {
         mFusedLocationClient.lastLocation
         .addOnSuccessListener { location: Location? ->
             l = location
-        }
+        }*/
 
     val geocoder = Geocoder(context, Locale.getDefault())
 
@@ -111,34 +211,54 @@ fun FeedCompo(visible: Boolean, postList: List<PostData>) {
     if (visible) {
         Scaffold(
         ) {
-            Column(modifier = Modifier
-                .fillMaxWidth()) {
-                Row(modifier = Modifier
+            Column(
+                modifier = Modifier
                     .fillMaxWidth()
-                    .wrapContentHeight()
-                    .background(Artip_pink)
-                    .padding(20.dp)) {
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .background(Artip_pink)
+                        .padding(20.dp)
+                ) {
                     Text(text = "Bem-vindo a " + welcomeText.value)
                 }
                 Spacer(Modifier.size(10.dp))
-                Box(Modifier.fillMaxSize()){
+                Box(Modifier.fillMaxSize()) {
                     LazyColumn(
-                    ){
-                        items(DataProvider.DataProvider.postList){ l ->
+                    ) {
+                        items(DataProvider.DataProvider.postList) { l ->
                             Feed_Entry(pd = l)
                         }
                     }
-                    Row(modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .offset(0.dp, -80.dp)
-                        .padding(20.dp)
-                        .background(Artip_pink)){
-                        TextField(value = textState.value, onValueChange = {textState.value = it}, Modifier.padding(10.dp))
+                    Row(
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .offset(0.dp, -80.dp)
+                            .padding(20.dp)
+                            .background(Artip_pink)
+                    ) {
+                        TextField(
+                            value = textState.value,
+                            onValueChange = { textState.value = it },
+                            Modifier.padding(10.dp)
+                        )
                         Spacer(Modifier.size(10.dp))
-                        Box(Modifier.wrapContentSize()
-                            .padding(0.dp, 20.dp, 0.dp, 20.dp)) {
+                        Box(
+                            Modifier
+                                .wrapContentSize()
+                                .padding(0.dp, 20.dp, 0.dp, 20.dp)
+                        ) {
                             Button(onClick = {
-                                DataProvider.DataProvider.postList.add(PostData("random", textState.value.text))
+
+                                if(textState.value.text.length>10) {
+                                    showAlert = true
+                                    insertPost(context, textState.value.text)
+                                } else {
+                                    Toast.makeText(context, "O post tem de ter no mínimo 15 caracteres!", Toast.LENGTH_SHORT).show()
+                                }
+
                             }, Modifier.align(Alignment.Center)) {
                                 Text(text = ">")
                             }
@@ -154,7 +274,7 @@ fun FeedCompo(visible: Boolean, postList: List<PostData>) {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview4() {
-    val ls:MutableList<PostData> = Arrays.asList(PostData("JoelDoe", "Hello Everyone!"))
+    val ls: MutableList<PostData> = Arrays.asList()
     ArtipTheme {
         FeedCompo(true, ls)
     }
@@ -164,5 +284,4 @@ fun DefaultPreview4() {
 fun InputMessage(pl: MutableList<PostData>) {
 
 
-    
 }
