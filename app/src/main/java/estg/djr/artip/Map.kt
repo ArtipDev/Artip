@@ -1,9 +1,13 @@
 package estg.djr.artip
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -22,8 +26,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.maps.CameraUpdateFactory
 import com.google.android.libraries.maps.MapView
 import com.google.android.libraries.maps.model.LatLng
@@ -39,6 +47,7 @@ import kotlinx.coroutines.launch
 
 
 class Map : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -53,20 +62,7 @@ class Map : ComponentActivity() {
 }
 
 @Composable
-fun Greeting3(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Composable
-fun DefaultPreview3() {
-    ArtipTheme {
-        Greeting3("Android")
-    }
-}
-
-
-@Composable
-fun GoogleMap(visible : Boolean) {
+fun GoogleMap(visible : Boolean, localizacao: LatLng) {
     if(visible) {
         val mapView = rememberMapViewWithLifeCycle()
 
@@ -85,25 +81,34 @@ fun GoogleMap(visible : Boolean) {
                     CoroutineScope(Dispatchers.Main).launch {
                         val map = mapView.awaitMap()
                         map.uiSettings.isZoomControlsEnabled = false
+
                         val pickUp = LatLng(41.6946, -8.83016) //Viana
                         val destination = LatLng(41.15, -8.61024) //Bangalore
-                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(destination, 6f))
+                        val Localizacao = localizacao
+
+                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(Localizacao, 6f))
+
                         val markerOptions =  MarkerOptions()
                             .title("Viana do Castelo")
                             .position(pickUp)
                         map.addMarker(markerOptions)
+
+                        val markerOptionsLocalizacao = MarkerOptions()
+                            .title("Você")
+                            .position(localizacao)
+                        map.addMarker(markerOptionsLocalizacao)
+
                         val markerOptionsDestination = MarkerOptions()
                             .title("Porto")
                             .position(destination)
-
                         map.addMarker(markerOptionsDestination)
+
                         map.setOnMarkerClickListener(com.google.android.libraries.maps.GoogleMap.OnMarkerClickListener {
                             Log.d("MARKER__", it.title.toString())
                             v.value = true
                             name.value = it.title.toString()
                             true
                         })
-
                     }
             }
             ArtistPopInfo(name = name.value, v.value)
