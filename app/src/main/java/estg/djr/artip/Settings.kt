@@ -41,7 +41,6 @@ var db = FirebaseFirestore.getInstance();
 
 
 
-
 class Settings : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
