@@ -30,15 +30,11 @@ import estg.djr.artip.data.SavePrefRadius
 import estg.djr.artip.ui.theme.Artip_pink
 import estg.djr.artip.ui.theme.bg_main
 import kotlinx.coroutines.launch
-import com.google.firebase.firestore.DocumentReference
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
 import estg.djr.artip.data.SavePrefUserType
 
 
-private lateinit var mAuth: FirebaseAuth
-var db = FirebaseFirestore.getInstance();
-
+private var  db = FirebaseFirestore.getInstance();
+private var mAuth = FirebaseAuth.getInstance()
 
 
 class Settings : ComponentActivity() {
@@ -57,10 +53,10 @@ class Settings : ComponentActivity() {
 }
 
 fun changeValue(isArtist: Boolean) {
+    val userDocUid = mAuth.currentUser?.uid
+    val userDocRef = db.collection("users").document(userDocUid!!)
 
-    val washingtonRef = db.collection("users").document("LCYsGy2TriR4idgzo0Fln3mknos2")
-
-    washingtonRef
+    userDocRef
         .update("isArtist", isArtist)
         .addOnSuccessListener { Log.d("TAG", "DocumentSnapshot successfully updated!") }
         .addOnFailureListener { e -> Log.w("TAG", "Error updating document", e) }

@@ -21,21 +21,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import estg.djr.artip.data.SavePrefUserType
 import estg.djr.artip.dataclasses.PostData
 import estg.djr.artip.ui.theme.ArtipTheme
 import estg.djr.artip.ui.theme.Artip_pink
 import java.util.*
-import com.google.firebase.auth.FirebaseAuth
 
 
-
-var db = FirebaseFirestore.getInstance();
-var mAuth = FirebaseAuth.getInstance()
+private var  db = FirebaseFirestore.getInstance();
+private var mAuth = FirebaseAuth.getInstance()
 var showAlert = false;
-
 
 
 object loadSingleTon {
@@ -144,6 +143,9 @@ fun FeedCompo(visible: Boolean, postList: List<PostData>) {
     val longitude = remember { mutableStateOf(12.0) }
     val latitude = remember { mutableStateOf(-14.0) }
 
+    val dataUserType = SavePrefUserType(context)
+    val savedUserType = dataUserType.getUserTypePref.collectAsState(initial = false)
+
 
     /*val mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
@@ -203,6 +205,8 @@ fun FeedCompo(visible: Boolean, postList: List<PostData>) {
                             Feed_Entry(pd = l)
                         }
                     }
+
+                    if(savedUserType.value!=false) {
                     Row(
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
@@ -216,6 +220,8 @@ fun FeedCompo(visible: Boolean, postList: List<PostData>) {
                             Modifier.padding(10.dp)
                         )
                         Spacer(Modifier.size(10.dp))
+
+
                         Box(
                             Modifier
                                 .wrapContentSize()
@@ -223,17 +229,25 @@ fun FeedCompo(visible: Boolean, postList: List<PostData>) {
                         ) {
                             Button(onClick = {
 
-                                if(textState.value.text.length>10) {
+                                if (textState.value.text.length > 10) {
                                     showAlert = true
                                     insertPost(context, textState.value.text)
                                 } else {
-                                    Toast.makeText(context, "O post tem de ter no mínimo 15 caracteres!", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        context,
+                                        "O post tem de ter no mínimo 15 caracteres!",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
 
                             }, Modifier.align(Alignment.Center)) {
                                 Text(text = ">")
                             }
                         }
+
+
+                    }
+
 
                     }
                 }
