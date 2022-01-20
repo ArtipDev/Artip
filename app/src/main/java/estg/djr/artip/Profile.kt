@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.Layout
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -33,11 +34,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
 import estg.djr.artip.ui.theme.ArtipTheme
+import org.intellij.lang.annotations.JdkConstants
 import kotlin.math.round
 
 private var bool = true;
 public var myProfile = true;
+public var Artista = true;
 var Posts: List<Int> = arrayListOf(1,1,1,1,1)
+var Favoritos: List<Int> = arrayListOf(1,1,1,1,1,1)
 
 class Profile : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,6 +76,11 @@ fun ProfileCampo(visible: Boolean, myProfile: Boolean) {
     val context = LocalContext.current
 
     if(visible) {
+        if(Artista){
+            Text(text = "Artista")
+        }else{
+            Text(text = "Espectador")
+        }
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
             .border(1.dp, Color(100, 244, 244))){
             Box(modifier = Modifier.padding(10.dp)) {
@@ -87,11 +96,11 @@ fun ProfileCampo(visible: Boolean, myProfile: Boolean) {
             }
             Column (horizontalAlignment = Alignment.CenterHorizontally , verticalArrangement = Arrangement.Center,modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 10.dp, bottom = 30.dp)){
+                .padding(bottom = 20.dp)){
                 Text("João Freitas", fontSize = 30.sp)
                 Text("Porto, Portugal", fontSize = 20.sp)
             }
-            if(myProfile) {
+            if(!myProfile) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -121,10 +130,38 @@ fun ProfileCampo(visible: Boolean, myProfile: Boolean) {
                         }
                     }
                 }
+            }else{
+                Column(
+                    Modifier
+                        .background(Color(230, 155, 155))
+                        .heightIn(max = 150.dp)
+                        .padding(bottom = 7.dp, start = 10.dp, end = 10.dp)
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+
+                ) {
+                    Text(text = "Artistas Favoritos:")
+                    LazyColumn(
+                        ){
+                        this.items(Favoritos){
+                            Favoritos("João Freitas")
+                        }
+                    }
+                }
             }
-            LazyColumn(Modifier.padding(bottom = 90.dp)){
-                this.items(Posts){
-                    Posts("João Freitas"," Olá a todos!\n Dia 30/01/2022 vamos ter uma atuação na Praia Norte ás 5 AM!\n Obrigado!")
+            if(!Artista && myProfile) {
+                Text(text = "@Post's")
+                LazyColumn(
+                    Modifier.padding(
+                        bottom = 90.dp, top = 25.dp
+                    )
+                ) {
+                    this.items(Posts) {
+                        Posts(
+                            "João Freitas",
+                            " Olá a todos!\n Dia 30/01/2022 vamos ter uma atuação na Praia Norte ás 5 AM!\n Obrigado!"
+                        )
+                    }
                 }
             }
         }
@@ -143,7 +180,8 @@ fun DefaultPreview5() {
 fun Posts(username: String, userMensage: String){
     Column (modifier = Modifier
         .padding(horizontal = 10.dp, vertical = 5.dp)
-        .clip(shape = RoundedCornerShape(10.dp))){
+        .clip(shape = RoundedCornerShape(10.dp))
+    ){
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -170,5 +208,31 @@ fun Posts(username: String, userMensage: String){
                 .heightIn(min = 100.dp)
                 .padding(horizontal = 10.dp, vertical = 5.dp)
         )
+    }
+}
+
+@Composable
+fun Favoritos(username: String) {
+    Column(modifier = Modifier
+        .padding(vertical = 2.dp)
+        .border(1.dp, Color(231, 151, 151))
+        .clip(shape = RoundedCornerShape(6.dp))) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = Color(216, 216, 216, 255))
+                .padding(horizontal = 10.dp, vertical = 5.dp)
+        ){
+            Image(
+                painterResource(id = R.drawable.profile_icon),
+                "Foto Perfil",
+                modifier = Modifier
+                    .size(40.dp, 40.dp)
+                    .fillMaxSize()
+                    .clip(CircleShape)
+            )
+            Text(text = username, Modifier.padding(start = 10.dp))
+        }
     }
 }
