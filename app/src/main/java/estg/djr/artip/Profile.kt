@@ -11,6 +11,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -35,6 +37,7 @@ import kotlin.math.round
 
 private var bool = true;
 public var myProfile = true;
+var Posts: List<Int> = arrayListOf(1,1,1,1,1)
 
 class Profile : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -119,9 +122,11 @@ fun ProfileCampo(visible: Boolean, myProfile: Boolean) {
                     }
                 }
             }
-
-            Posts()
-
+            LazyColumn(Modifier.padding(bottom = 90.dp)){
+                this.items(Posts){
+                    Posts("João Freitas"," Olá a todos!\n Dia 30/01/2022 vamos ter uma atuação na Praia Norte ás 5 AM!\n Obrigado!")
+                }
+            }
         }
     }
 }
@@ -135,11 +140,14 @@ fun DefaultPreview5() {
 }
 
 @Composable
-fun Posts(){
-    Column (modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp).clip(shape = RoundedCornerShape(10.dp))){
+fun Posts(username: String, userMensage: String){
+    Column (modifier = Modifier
+        .padding(horizontal = 10.dp, vertical = 5.dp)
+        .clip(shape = RoundedCornerShape(10.dp))){
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .background(color = Color(216, 216, 216, 255))
                 .padding(horizontal = 10.dp, vertical = 3.dp)
         ){
@@ -151,13 +159,14 @@ fun Posts(){
                     .fillMaxSize()
                     .clip(CircleShape)
             )
-            Text(text = "João Freitas", Modifier.padding(start = 10.dp) )
+            Text(text = username, Modifier.padding(start = 10.dp) )
 
         }
         Text(
-            text = "Amanhã dia 29/02/2022, vou atuar na Praia Norte em Viana!\nCumprimentos Amigos!",
-            modifier = Modifier.fillMaxWidth()
-                .background( Color(154, 199, 184, 255))
+            text = userMensage,
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(154, 199, 184, 255))
                 .heightIn(min = 100.dp)
                 .padding(horizontal = 10.dp, vertical = 5.dp)
         )
