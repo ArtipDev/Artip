@@ -29,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role.Companion.Button
 import androidx.compose.ui.semantics.Role.Companion.Image
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -77,9 +78,9 @@ fun ProfileCampo(visible: Boolean, myProfile: Boolean) {
 
     if(visible) {
         if(Artista){
-            Text(text = "Artista")
+            Text(text = "Artista",modifier = Modifier.padding(start = 10.dp, top = 4.dp), fontWeight = FontWeight.Bold)
         }else{
-            Text(text = "Espectador")
+            Text(text = "Espectador", modifier = Modifier.padding(start = 10.dp, top = 4.dp), fontWeight = FontWeight.Bold)
         }
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
             .border(1.dp, Color(100, 244, 244))){
@@ -149,11 +150,11 @@ fun ProfileCampo(visible: Boolean, myProfile: Boolean) {
                     }
                 }
             }
-            if(!Artista && myProfile) {
-                Text(text = "@Post's")
+            if(Artista || !myProfile) {
+                Text(text = "Publicações:",modifier = Modifier.padding(top = 10.dp))
                 LazyColumn(
                     Modifier.padding(
-                        bottom = 90.dp, top = 25.dp
+                        bottom = 90.dp
                     )
                 ) {
                     this.items(Posts) {
