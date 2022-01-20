@@ -90,6 +90,9 @@ dependencies {
     //QrCode
     implementation 'com.budiyev.android:code-scanner:2.1.0'
 
+    //glide
+    implementation "com.github.skydoves:landscapist-glide:1.4.5"
+
     //Map
     implementation "com.google.android.libraries.maps:maps:3.1.0-beta"
     implementation "com.google.maps.android:maps-v3-ktx:2.2.0"
