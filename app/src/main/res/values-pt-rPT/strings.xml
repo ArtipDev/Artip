@@ -20,4 +20,8 @@
     <string name="text_profile_name">Nome</string>
     <string name="text_profile_favArtists">Artistas favoritos</string>
     <string name="register_message">Ou Inscrevete-te</string>
+    <string name="text_profile_following">Seguido</string>
+    <string name="text_profile_call">Ligar</string>
+    <string name="text_profile_donation">Doar</string>
+    <string name="text_profile_follow">Seguir</string>
 </resources>
