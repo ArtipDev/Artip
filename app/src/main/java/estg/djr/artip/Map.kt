@@ -44,15 +44,30 @@ import com.google.android.libraries.maps.model.BitmapDescriptorFactory
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.location.Geocoder
+import androidx.compose.animation.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.platform.LocalDensity
 import androidx.core.app.ActivityCompat
 
 import com.google.android.libraries.maps.model.BitmapDescriptor
+import com.google.firebase.auth.FirebaseAuth
+import estg.djr.artip.data.CurrentLocationLat
+import estg.djr.artip.data.CurrentLocationLong
+import estg.djr.artip.data.SavePrefUserType
+import java.util.*
 
 
 private var db = FirebaseFirestore.getInstance();
+private var mAuth = FirebaseAuth.getInstance()
 private var canAcessToFirebase : Boolean = false
+
+
+
+
+
+
 
 class Map : ComponentActivity() {
 
@@ -69,18 +84,33 @@ class Map : ComponentActivity() {
 
 }
 @Composable
-fun GoogleMap(visible : Boolean, Localizacao: LatLng) {
+fun GoogleMap(visible : Boolean) {
+
+    Log.d("LATLONG_", "123123123123")
 
     val context = LocalContext.current
 
-    Log.d("lat__", Localizacao.toString())
+    val dataLatPref = CurrentLocationLat(context)
+    val savedLat = dataLatPref.getLatPref.collectAsState(initial = 0.00)
+
+    val dataLongPref = CurrentLocationLong(context)
+    val savedLong = dataLongPref.getLongPref.collectAsState(initial = 0.00)
+
+
+
+
+    val dataUserType = SavePrefUserType(context)
+    val savedUserType = dataUserType.getUserTypePref.collectAsState(initial = false)
+
 
     if(visible) {
         val mapView = rememberMapViewWithLifeCycle()
 
         val name = remember { mutableStateOf("") }
-        val markerDocUid = remember { mutableStateOf("") }
+        val userPhoto = remember { mutableStateOf("") }
+
         val v = remember { mutableStateOf(false)}
+        val vMarkerPop = remember { mutableStateOf(false)}
 
         Column(
             modifier = Modifier
@@ -106,11 +136,9 @@ fun GoogleMap(visible : Boolean, Localizacao: LatLng) {
                         }
                         map.isMyLocationEnabled=true
 
-
-
                         map.setMapStyle((MapStyleOptions.loadRawResourceStyle(context, R.raw.mapstyle)))
 
-                        val pickUp = LatLng(Localizacao.latitude,Localizacao.longitude)
+                        val pickUp = LatLng(savedLat.value!!, savedLong.value!!)
                         map.moveCamera(CameraUpdateFactory.newLatLngZoom(pickUp, 10f))
 
                         val docRef = db.collection("markers")
@@ -150,12 +178,13 @@ fun GoogleMap(visible : Boolean, Localizacao: LatLng) {
                                 Log.d("MARKER__", it.title.toString())
                                 v.value = true
                                 name.value = it.title.toString()
-                                markerDocUid.value = it.tag.toString()
+                                userPhoto.value = it.tag.toString()
                                 true
                             })
 
                             map.setOnMapClickListener ( com.google.android.libraries.maps.GoogleMap.OnMapClickListener {
                                 v.value = false
+                                vMarkerPop.value = false
                             })
 
 
@@ -166,18 +195,24 @@ fun GoogleMap(visible : Boolean, Localizacao: LatLng) {
 
                     }
             }
-            ArtistPopInfo(name = name.value, v.value, markerDocUid.value)
-                Box(Modifier.fillMaxSize(), Alignment.BottomCenter) {
-                    Button(onClick = { /*TODO*/ }, Modifier.background(color = Artip_pink).offset(x = 0.dp, y = -80.dp)) {
-                        Text(text = "Start!", Modifier.padding(10.dp))
+            ArtistPopInfo(name = name.value, v.value, userPhoto.value)
+            ArtistPopCreateMarker(vMarkerPop.value)
+
+
+                if(savedUserType.value!!) {
+                    Box(Modifier.fillMaxSize(), Alignment.BottomCenter) {
+                        Button(onClick = {
+                            vMarkerPop.value = true
+                        },
+                            Modifier
+                                .background(color = Artip_pink)
+                                .offset(x = 0.dp, y = -80.dp)) {
+                            Text(text = "Start!", Modifier.padding(10.dp))
+                        }
                     }
                 }
+
             }
-
-
-            
-
-
 
         }
     }
@@ -191,52 +226,149 @@ private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): Bitm
         BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 }
+
 @Composable
 fun ArtistPopInfo(name: String, visible: Boolean, markerUidDoc:String) {
 
-
-    if(visible){
+    val density = LocalDensity.current
+    AnimatedVisibility(
+        visible,
+        enter = slideInVertically {
+            with(density) { -40.dp.roundToPx() }
+        } + expandVertically(
+            expandFrom = Alignment.Top
+        ) + fadeIn(
+            initialAlpha = 0.3f
+        ),
+        exit = slideOutVertically() + shrinkVertically() + fadeOut()
+    ) {
         Column(
             Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .background(Artip_pink)
         ) {
-            Row(Modifier.padding(10.dp),
 
 
-            Arrangement.SpaceEvenly) {
-
-                 GlideImage(
-                    imageModel = markerUidDoc,
-                    modifier = Modifier
-                        .size(90.dp)
-                        .padding(10.dp)
-                        .clip(shape = CircleShape),
-                    error = ImageBitmap.imageResource(R.drawable.profile_icon)
-                )
-                Text(text = name)
-
-            }
-
-            Spacer(modifier = Modifier.size(0.dp))
-            Row(
+            Column(
                 Modifier
                     .fillMaxWidth()
-                    .padding(10.dp)) {
-                Button(onClick = { /*TODO*/ },
-                    Modifier.weight(1f)) {
-                    Text(text = "Click me")
+                    .wrapContentHeight()
+                    .background(Artip_pink)
+            ) {
+                Row(Modifier.padding(10.dp),
+
+
+                    Arrangement.SpaceEvenly) {
+
+                    GlideImage(
+                        imageModel = markerUidDoc,
+                        modifier = Modifier
+                            .size(90.dp)
+                            .padding(10.dp)
+                            .clip(shape = CircleShape),
+                        error = ImageBitmap.imageResource(R.drawable.profile_icon)
+                    )
+                    Text(text = name)
+
                 }
-                Spacer(modifier = Modifier.size(10.dp))
-                Button(onClick = { /*TODO*/ },
-                    Modifier.weight(1f)) {
-                    Text(text = "No me...")
+
+                Spacer(modifier = Modifier.size(0.dp))
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)) {
+                    Button(onClick = { /*TODO*/ },
+                        Modifier.weight(1f)) {
+                        Text(text = "Click me")
+                    }
+                    Spacer(modifier = Modifier.size(10.dp))
+                    Button(onClick = { /*TODO*/ },
+                        Modifier.weight(1f)) {
+                        Text(text = "No me...")
+                    }
                 }
+
             }
         }
     }
+
+
+
 }
+
+@Composable
+fun ArtistPopCreateMarker(visible:Boolean) {
+
+    var context = LocalContext.current
+    var currentUser = mAuth.currentUser
+    var isVisible = remember { mutableStateOf(true)}
+
+
+    val dataLatPref = CurrentLocationLat(context)
+    val savedLat = dataLatPref.getLatPref.collectAsState(initial = 0.00)
+
+    val dataLongPref = CurrentLocationLong(context)
+    val savedLong = dataLongPref.getLongPref.collectAsState(initial = 0.00)
+
+
+
+
+    val geocoder = Geocoder(context, Locale.getDefault())
+
+    Log.d("LATLONG_", savedLat.value.toString())
+    Log.d("LATLONG_", savedLong.value.toString())
+
+    Log.d("LATLONG_", "testeeeee")
+    val cityName = geocoder.getFromLocation(savedLat.value!!,savedLong.value!! ,1)
+
+
+    val density = LocalDensity.current
+        AnimatedVisibility(
+            visible,
+            enter = slideInVertically {
+                    with(density) { -40.dp.roundToPx() }
+                } + expandVertically(
+                    expandFrom = Alignment.Top
+                ) + fadeIn(
+                    initialAlpha = 0.3f
+                ),
+            exit = slideOutVertically() + shrinkVertically() + fadeOut()
+        ) {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .background(Artip_pink)
+            ) {
+                Row(Modifier.padding(10.dp),
+                    Arrangement.SpaceEvenly) {
+                    GlideImage(
+                        imageModel = currentUser?.photoUrl,
+                        modifier = Modifier
+                            .size(90.dp)
+                            .padding(10.dp)
+                            .clip(shape = CircleShape),
+                        error = ImageBitmap.imageResource(R.drawable.profile_icon)
+                    )
+                    Text(text = cityName[0].adminArea.toString())
+                }
+                Spacer(modifier = Modifier.size(0.dp))
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)) {
+                    Button(onClick = { /*TODO*/ },
+                        Modifier.weight(1f)) {
+                        Text(text = "Colocar Ponto")
+                    }
+
+                }
+        }
+    }
+}
+
+
 
 @Preview
 @Composable

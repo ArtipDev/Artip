@@ -1,6 +1,7 @@
 package estg.djr.artip
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
@@ -21,8 +22,12 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.location.*
 import com.google.android.libraries.maps.GoogleMap
 import com.google.android.libraries.maps.model.LatLng
+import estg.djr.artip.data.CurrentLocationLat
+import estg.djr.artip.data.CurrentLocationLong
 import estg.djr.artip.dataclasses.PostData
 import estg.djr.artip.ui.theme.ArtipTheme
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.*
 
 class Dashboard : ComponentActivity() {
@@ -37,6 +42,11 @@ class Dashboard : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContent {
+            ArtipTheme {
+                MainPage(nv)
+            }
+        }
 
         createLocationRequest()
 
@@ -46,10 +56,11 @@ class Dashboard : ComponentActivity() {
                 super.onLocationResult(p0)
                 lastLocation = p0.lastLocation
                 var loc = LatLng(lastLocation.latitude, lastLocation.longitude)
-                setContent {
-                    ArtipTheme {
-                        MainPage(nv, loc)
-                    }
+                val latData = CurrentLocationLat(context = this@Dashboard)
+                val longData = CurrentLocationLong(context = this@Dashboard)
+                runBlocking {
+                    latData.saveLat(loc.latitude)
+                    longData.saveLong(loc.longitude)
                 }
             }
         }
@@ -57,8 +68,8 @@ class Dashboard : ComponentActivity() {
 
     private fun createLocationRequest() {
         locationRequest = LocationRequest.create().apply {
-            interval = 20000
-            fastestInterval = 20000
+            interval = 1000
+            fastestInterval = 1000
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
     }
@@ -97,7 +108,7 @@ class Dashboard : ComponentActivity() {
     }
 
     @Composable
-    fun MainPage(tabChange: Navbar = Navbar(), localizacao: LatLng) {
+    fun MainPage(tabChange: Navbar = Navbar()) {
 
         val list: List<PostData> =
             Arrays.asList(PostData("123123","JohnDoe", "Um doid três", "https://lh3.googleusercontent.com/a/AATXAJyEBAfnbxsRDXsmqzTETt6A7vhrzVqIQIA9yAMx=s96-c"),
@@ -112,13 +123,13 @@ class Dashboard : ComponentActivity() {
         ) {
             when(currentTab) {
                 0 -> {
-                    GoogleMap(visible = true, localizacao)
+                    GoogleMap(visible = true)
                     ProfileCompo(false)
                     SettingsCompo(visible = false)
                     FeedCompo(visible = false,list)
                 }
                 1 -> {
-                    GoogleMap(visible = false, localizacao)
+                    GoogleMap(visible = false)
                     ProfileCompo(visible = false)
                     SettingsCompo(visible = false)
                     FeedCompo(true,list)
@@ -126,14 +137,14 @@ class Dashboard : ComponentActivity() {
                 2 -> {
                     FeedCompo(visible = false,list)
                     ProfileCompo(true)
-                    GoogleMap(visible = false, localizacao)
+                    GoogleMap(visible = false)
                     SettingsCompo(visible = false)
 
                 }
                 4 -> {
                     SettingsCompo(visible = true)
                     FeedCompo(visible = false, list)
-                    GoogleMap(visible = false, localizacao)
+                    GoogleMap(visible = false)
                     ProfileCompo(visible = false)
                 }
 
