@@ -47,7 +47,6 @@ class Dashboard : ComponentActivity() {
                 setContent {
                     ArtipTheme {
                         MainPage(nv, loc)
-                        Log.d("Lets go!", ""+loc)
                     }
                 }
             }
@@ -56,8 +55,8 @@ class Dashboard : ComponentActivity() {
 
     private fun createLocationRequest() {
         locationRequest = LocationRequest.create().apply {
-            interval = 10000
-            fastestInterval = 10000
+            interval = 20000
+            fastestInterval = 20000
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
     }
