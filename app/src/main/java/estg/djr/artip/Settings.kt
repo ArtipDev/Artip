@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -135,22 +136,25 @@ fun SettingsCompo(visible: Boolean) {
             Spacer(modifier = Modifier.size(20.dp))
 
 
-
-            Switch(
-                checked = savedUserType.value!!,
-                onCheckedChange = {
-                    scope.launch {dataUserType.saveUserTypePref(!savedUserType.value!!) }
-                    if(it) {
-                        changeValue(true)
-                    } else {
-                        changeValue(false)
-                    }
-
-                                  },
-                colors = SwitchDefaults.colors(Color.Green)
-            )
-
-
+            Row(
+                
+            ){
+                Text(text = "Tornar artista!", textAlign = TextAlign.Left, color = Color.White)
+                Spacer(modifier = Modifier.size(10.dp))
+                Switch(
+                    checked = savedUserType.value!!,
+                    onCheckedChange = {
+                        scope.launch {dataUserType.saveUserTypePref(!savedUserType.value!!) }
+                        if(it) {
+                            changeValue(true)
+                        } else {
+                            changeValue(false)
+                        }
+                    },
+                    colors = SwitchDefaults.colors(Color.Green)
+                )
+            }
+            
 
             Spacer(modifier = Modifier.size(20.dp))
 
@@ -178,5 +182,4 @@ fun SettingsCompo(visible: Boolean) {
 @Composable
 fun LanguageSelection() {
     SettingsCompo(visible = true)
-
 }
