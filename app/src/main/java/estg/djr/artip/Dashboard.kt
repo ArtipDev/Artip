@@ -35,23 +35,25 @@ class Dashboard : ComponentActivity() {
             when(currentTab) {
                 0 -> {
                     GoogleMap(visible = true)
-                    ProfileCompo(false)
+                    ProfileCampo(false, false)
                     FeedCompo(visible = false)
                 }
                 1 -> {
                     GoogleMap(visible = false)
-                    ProfileCompo(visible = false)
+                    ProfileCampo(visible = false, false)
                     FeedCompo(true)
                 }
                 2 -> {
                     FeedCompo(visible = false)
-                    ProfileCompo(true)
+                    ProfileCampo(false, false)
                     GoogleMap(visible = false)
-
                 }
-
+                3 -> {
+                    FeedCompo(visible = false)
+                    ProfileCampo(true, myProfile)
+                    GoogleMap(visible = false)
+                }
             }
-
         }
     }
 }

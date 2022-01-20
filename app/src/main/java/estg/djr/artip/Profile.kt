@@ -1,28 +1,40 @@
 package estg.djr.artip
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.VerticalAlignmentLine
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role.Companion.Button
 import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import estg.djr.artip.ui.theme.ArtipTheme
+import kotlin.math.round
+
+private var bool = true;
+public var myProfile = true;
 
 class Profile : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,18 +43,33 @@ class Profile : ComponentActivity() {
             ArtipTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    ProfileCompo(true)
+                    ProfileCampo(true, myProfile)
                 }
             }
         }
     }
 }
+fun Seguir(seguido: Boolean): String{
+    if(seguido){
+        return "Seguido"
+    }
+    return "Seguir"
+}
+
+fun Ligar(Numero: String, context: Context){
+    val intent = Intent(Intent.ACTION_DIAL);
+    intent.data = Uri.parse("tel:$Numero")
+    startActivity(context, intent, null)
+}
 
 @Composable
-fun ProfileCompo(visible: Boolean) {
+fun ProfileCampo(visible: Boolean, myProfile: Boolean) {
+    var text = remember { mutableStateOf(Seguir(bool)) }
+
+    val context = LocalContext.current
+
     if(visible) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
-            .padding(10.dp)
             .border(1.dp, Color(100, 244, 244))){
             Box(modifier = Modifier.padding(10.dp)) {
                 Image(
@@ -57,25 +84,45 @@ fun ProfileCompo(visible: Boolean) {
             }
             Column (horizontalAlignment = Alignment.CenterHorizontally , verticalArrangement = Arrangement.Center,modifier = Modifier
                 .fillMaxWidth()
-                .padding(15.dp)){
+                .padding(top = 10.dp, bottom = 30.dp)){
                 Text("João Freitas", fontSize = 30.sp)
                 Text("Porto, Portugal", fontSize = 20.sp)
             }
-            Row(modifier = Modifier.fillMaxWidth().padding(10.dp), horizontalArrangement = Arrangement.Center) {
-                Row(){
-                    Button(onClick = { /*TODO*/ }, modifier = Modifier.size(100.dp, 40.dp)) {
-                        Text("Seguir")
-                    }
-                    Button(onClick = { /*TODO*/ }, modifier = Modifier.padding(horizontal = 13.dp).size(100.dp, 40.dp)) {
-                        Text("?")
-                    }
-                    Button(onClick = { /*TODO*/ }, modifier = Modifier.size(100.dp, 40.dp)) {
-                        Text("Donation")
+            if(myProfile) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 20.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Row{
+                        Button(
+                            onClick = {
+                                bool = !bool
+                                text.value = Seguir(bool)
+                            },
+                            modifier = Modifier.size(110.dp, 40.dp)
+                        ) {
+                            Text(text.value)
+                        }
+                        Button(
+                            onClick = { Ligar(context = context, Numero = "916002758")},
+                            modifier = Modifier
+                                .padding(horizontal = 13.dp)
+                                .size(120.dp, 40.dp)
+                        ) {
+                            Text("Ligar")
+                        }
+                        Button(onClick = { /*TODO*/ }, modifier = Modifier.size(110.dp, 40.dp)) {
+                            Text("Donation")
+                        }
                     }
                 }
             }
-        }
 
+            Posts()
+
+        }
     }
 }
 
@@ -83,6 +130,36 @@ fun ProfileCompo(visible: Boolean) {
 @Composable
 fun DefaultPreview5() {
     ArtipTheme {
-        ProfileCompo(true)
+        ProfileCampo(true, myProfile)
+    }
+}
+
+@Composable
+fun Posts(){
+    Column (modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp).clip(shape = RoundedCornerShape(10.dp))){
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+                .background(color = Color(216, 216, 216, 255))
+                .padding(horizontal = 10.dp, vertical = 3.dp)
+        ){
+            Image(
+                painterResource(id = R.drawable.profile_icon),
+                "Foto Perfil",
+                modifier = Modifier
+                    .size(40.dp, 40.dp)
+                    .fillMaxSize()
+                    .clip(CircleShape)
+            )
+            Text(text = "João Freitas", Modifier.padding(start = 10.dp) )
+
+        }
+        Text(
+            text = "Amanhã dia 29/02/2022, vou atuar na Praia Norte em Viana!\nCumprimentos Amigos!",
+            modifier = Modifier.fillMaxWidth()
+                .background( Color(154, 199, 184, 255))
+                .heightIn(min = 100.dp)
+                .padding(horizontal = 10.dp, vertical = 5.dp)
+        )
     }
 }
