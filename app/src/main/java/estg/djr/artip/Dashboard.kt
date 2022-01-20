@@ -61,15 +61,19 @@ class Dashboard : ComponentActivity() {
                 runBlocking {
                     latData.saveLat(loc.latitude)
                     longData.saveLong(loc.longitude)
+
+                    Log.d("****AMARO", loc.latitude.toString())
+                    Log.d("****AMARO", loc.longitude.toString())
                 }
+                Log.d("****AMARO", "Out of ")
             }
         }
     }
 
     private fun createLocationRequest() {
         locationRequest = LocationRequest.create().apply {
-            interval = 1000
-            fastestInterval = 1000
+            interval = 1500
+            fastestInterval = 1500
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
     }
@@ -77,13 +81,13 @@ class Dashboard : ComponentActivity() {
     override fun onPause() {
         super.onPause()
         fusedLocationClient.removeLocationUpdates(locationCallback)
-        Log.d("****Joao","onPause - RemoveLocationUpdates")
+        Log.d("****AMARO","onPause - RemoveLocationUpdates")
     }
 
     override fun onResume() {
         super.onResume()
         startLocationUpdates()
-        Log.d("****Joao","onResume - startLocationUpdates")
+        Log.d("****AMARO","onResume - startLocationUpdates")
     }
 
     private fun startLocationUpdates() {
@@ -124,19 +128,25 @@ class Dashboard : ComponentActivity() {
             when(currentTab) {
                 0 -> {
                     GoogleMap(visible = true)
-                    ProfileCompo(false)
+                    ProfileCampo(false, false)
                     SettingsCompo(visible = false)
                     FeedCompo(visible = false,list)
                 }
                 1 -> {
                     GoogleMap(visible = false)
-                    ProfileCompo(visible = false)
+                    ProfileCampo(visible = false, false)
                     SettingsCompo(visible = false)
                     FeedCompo(true,list)
                 }
                 2 -> {
+                FeedCompo(visible = false,list)
+                ProfileCampo(true, false)
+                GoogleMap(visible = false)
+                SettingsCompo(visible = false)
+                }
+                3 -> {
                     FeedCompo(visible = false,list)
-                    ProfileCompo(true)
+                    ProfileCampo(true, myProfile = true)
                     GoogleMap(visible = false)
                     SettingsCompo(visible = false)
 
@@ -145,7 +155,7 @@ class Dashboard : ComponentActivity() {
                     SettingsCompo(visible = true)
                     FeedCompo(visible = false, list)
                     GoogleMap(visible = false)
-                    ProfileCompo(visible = false)
+                    ProfileCampo(visible = false, false)
                 }
 
             }

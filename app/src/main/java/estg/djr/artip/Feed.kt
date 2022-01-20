@@ -37,51 +37,10 @@ private var mAuth = FirebaseAuth.getInstance()
 var showAlert = false;
 
 
-object loadSingleTon {
-    init {
-        val docRef = db.collection("posts").orderBy("createdAt", Query.Direction.DESCENDING).limit(50)
 
-        docRef.addSnapshotListener { snapshot, e ->
-            if (e != null) {
-                return@addSnapshotListener
-            }
-            if (snapshot != null) {
-                DataProvider.DataProvider.postList.clear()
-                val documents = snapshot.documents
-                if(documents.size!=0) {
-                    for (document in documents) {
-                        var documentId = document.id
-                        var userPost = document.get("data")
-                        var username = document.get("username")
-                        var userPhoto = document.get("userPhoto")
-                        DataProvider.DataProvider.postList.add(
-                            PostData(
-                                documentId.toString(),
-                                username.toString(),
-                                userPost.toString(),
-                                userPhoto.toString()
-                            )
-                        )
-                    }
-                } else {
-                    DataProvider.DataProvider.postList.add(PostData(
-                            "xxxxxx",
-                            "Sistema",
-                            "De momento, não existem posts!",
-                            "null"
-                        ))
-                }
-            } else {
-                DataProvider.DataProvider.postList.add(PostData(
-                    "xxxxxx",
-                    "Sistema",
-                    "De momento, não existem posts!",
-                    "null"
-                ))
-            }
-        }
-    }
-}
+
+
+
 
 
 class Feed : ComponentActivity() {
@@ -129,7 +88,7 @@ fun insertPost(context: Context, text: String) {
 @Composable
 fun FeedCompo(visible: Boolean, postList: List<PostData>) {
 
-    loadSingleTon
+
 
     val context = LocalContext.current
 
@@ -180,6 +139,51 @@ fun FeedCompo(visible: Boolean, postList: List<PostData>) {
     val k = geocoder.getFromLocation(41.6946, -8.83016, 1)
 
     welcomeText.value = k[0]!!.locality.toString()
+
+
+
+
+    val docRef = db.collection("posts").orderBy("createdAt", Query.Direction.DESCENDING).limit(50)
+
+    docRef.addSnapshotListener { snapshot, e ->
+        if (e != null) {
+            return@addSnapshotListener
+        }
+        if (snapshot != null) {
+            DataProvider.DataProvider.postList.clear()
+            val documents = snapshot.documents
+            if(documents.size!=0) {
+                for (document in documents) {
+                    var documentId = document.id
+                    var userPost = document.get("data")
+                    var username = document.get("username")
+                    var userPhoto = document.get("userPhoto")
+                    DataProvider.DataProvider.postList.add(
+                        PostData(
+                            documentId.toString(),
+                            username.toString(),
+                            userPost.toString(),
+                            userPhoto.toString()
+                        )
+                    )
+                }
+            } else {
+                DataProvider.DataProvider.postList.add(PostData(
+                    "xxxxxx",
+                    "Sistema",
+                    "De momento, não existem posts!",
+                    "null"
+                ))
+            }
+        } else {
+            DataProvider.DataProvider.postList.add(PostData(
+                "xxxxxx",
+                "Sistema",
+                "De momento, não existem posts!",
+                "null"
+            ))
+        }
+    }
 
     if (visible) {
         Scaffold(

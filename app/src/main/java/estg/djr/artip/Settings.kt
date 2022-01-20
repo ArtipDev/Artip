@@ -1,5 +1,6 @@
 package estg.djr.artip
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -24,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import estg.djr.artip.data.SavePrefNotifications
@@ -63,6 +65,9 @@ fun changeValue(isArtist: Boolean) {
         .addOnFailureListener { e -> Log.w("TAG", "Error updating document", e) }
 
 }
+
+
+
 
 
 @Composable
@@ -170,6 +175,19 @@ fun SettingsCompo(visible: Boolean) {
                 Checkbox(checked = savedNotifications.value!!, onCheckedChange = {
                     scope.launch { dataNotifications.saveNotifications(!savedNotifications.value!!) }
                 })
+            }
+
+            Spacer(modifier = Modifier.size(20.dp))
+            Box(Modifier.fillMaxSize(), Alignment.BottomCenter) {
+                Button(onClick = {
+                    mAuth.signOut()
+                    context.startActivity(Intent(context, LoginActivity::class.java))
+                },
+                    Modifier
+                        .background(color = Artip_pink)
+                        .offset(x = 0.dp, y = -80.dp)) {
+                    Text(text = "logout", Modifier.padding(10.dp))
+                }
             }
 
 

@@ -45,16 +45,20 @@ import com.google.android.libraries.maps.model.BitmapDescriptorFactory
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.location.Geocoder
+import android.location.Location
+import android.widget.Toast
 import androidx.compose.animation.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalDensity
 import androidx.core.app.ActivityCompat
 
 import com.google.android.libraries.maps.model.BitmapDescriptor
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.GeoPoint
 import estg.djr.artip.data.CurrentLocationLat
 import estg.djr.artip.data.CurrentLocationLong
+import estg.djr.artip.data.SavePrefRadius
 import estg.djr.artip.data.SavePrefUserType
 import java.util.*
 
@@ -62,9 +66,6 @@ import java.util.*
 private var db = FirebaseFirestore.getInstance();
 private var mAuth = FirebaseAuth.getInstance()
 private var canAcessToFirebase : Boolean = false
-
-
-
 
 
 
@@ -88,20 +89,19 @@ fun GoogleMap(visible : Boolean) {
 
     Log.d("LATLONG_", "123123123123")
 
+
     val context = LocalContext.current
 
     val dataLatPref = CurrentLocationLat(context)
     val savedLat = dataLatPref.getLatPref.collectAsState(initial = 0.00)
-
     val dataLongPref = CurrentLocationLong(context)
     val savedLong = dataLongPref.getLongPref.collectAsState(initial = 0.00)
-
-
-
 
     val dataUserType = SavePrefUserType(context)
     val savedUserType = dataUserType.getUserTypePref.collectAsState(initial = false)
 
+    val dataRadius = SavePrefRadius(context)
+    val savedRadius = dataRadius.getRadiusPref.collectAsState(initial = "")
 
     if(visible) {
         val mapView = rememberMapViewWithLifeCycle()
@@ -152,27 +152,40 @@ fun GoogleMap(visible : Boolean) {
                             map.clear()
                             val documents = snapshot.documents
 
-                            for (document in documents) {
+                            if(documents.size>0) {
+                                for (document in documents) {
 
-                                val geoPoint = document.getGeoPoint("loc")
-                                val name = document.get("name")
-                                val userPhotoUrl = document.get("urlPhoto")
+                                    val geoPoint = document.getGeoPoint("loc")
+                                    val name = document.get("name")
+                                    val userPhotoUrl = document.get("urlPhoto")
 
 
-                                val lat = geoPoint!!.latitude
-                                val lng = geoPoint!!.longitude
+                                    val lat = geoPoint!!.latitude
+                                    val lng = geoPoint!!.longitude
 
-                                val geopoints = LatLng(lat, lng)
 
-                                val markerOptionsDestination = MarkerOptions()
-                                    .title(name.toString())
-                                    .position(geopoints)
-                                    .icon(bitmapDescriptorFromVector(context = context, R.drawable.artlogo))
+                                    val geopoints = LatLng(lat, lng)
 
-                                map.addMarker(markerOptionsDestination).tag = userPhotoUrl
+                                    val results = FloatArray(1)
+                                    val distanceBetween = Location.distanceBetween(
+                                        lat,
+                                        lng,
+                                        savedLat.value!!,
+                                        savedLong.value!!,
+                                        results
+                                        )
 
+
+                                    if((results[0].toDouble()/1000) < savedRadius.value!!.toDouble()) {
+                                        val markerOptionsDestination = MarkerOptions()
+                                            .title(name.toString())
+                                            .position(geopoints)
+                                            .icon(bitmapDescriptorFromVector(context = context, R.drawable.artlogo))
+
+                                        map.addMarker(markerOptionsDestination).tag = userPhotoUrl
+                                    }
+                                }
                             }
-
 
                             map.setOnMarkerClickListener(com.google.android.libraries.maps.GoogleMap.OnMarkerClickListener {
                                 Log.d("MARKER__", it.title.toString())
@@ -191,8 +204,8 @@ fun GoogleMap(visible : Boolean) {
                         } else {
                             Log.d("FIREBASETESTE", "Current data: null")
                         }
-                    }
 
+                    }
                     }
             }
             ArtistPopInfo(name = name.value, v.value, userPhoto.value)
@@ -292,47 +305,61 @@ fun ArtistPopInfo(name: String, visible: Boolean, markerUidDoc:String) {
             }
         }
     }
-
-
-
 }
+
+
+fun insertNewMarker(context: Context, lat: Double, long : Double, streetName : String) {
+
+    val currentUser = mAuth.currentUser
+    val timestamp = FieldValue.serverTimestamp();
+    val location = GeoPoint(lat,long)
+
+    val marker = hashMapOf(
+        "createdAt" to timestamp,
+        "artistname" to currentUser?.displayName.toString(),
+        "loc" to location,
+        "name" to streetName.toString(),
+        "urlPhoto" to currentUser?.photoUrl.toString()
+    )
+
+    db.collection("markers")
+        .add(marker)
+        .addOnSuccessListener { documentReference ->
+            Log.d("DATA", "ADDED")
+            Toast.makeText(context, "Pin adicionadom sucesso!", Toast.LENGTH_SHORT).show()
+        }
+        .addOnFailureListener { e -> Log.w("INSERIR", "Error adding document", e) }
+}
+
+
 
 @Composable
 fun ArtistPopCreateMarker(visible:Boolean) {
 
     var context = LocalContext.current
     var currentUser = mAuth.currentUser
-    var isVisible = remember { mutableStateOf(true)}
-
 
     val dataLatPref = CurrentLocationLat(context)
     val savedLat = dataLatPref.getLatPref.collectAsState(initial = 0.00)
-
     val dataLongPref = CurrentLocationLong(context)
     val savedLong = dataLongPref.getLongPref.collectAsState(initial = 0.00)
-
-
-
-
     val geocoder = Geocoder(context, Locale.getDefault())
 
-    Log.d("LATLONG_", savedLat.value.toString())
-    Log.d("LATLONG_", savedLong.value.toString())
 
-    Log.d("LATLONG_", "testeeeee")
-    val cityName = geocoder.getFromLocation(savedLat.value!!,savedLong.value!! ,1)
+    val geoReverse = geocoder.getFromLocation(savedLat.value!!,savedLong.value!! ,1)
 
 
-    val density = LocalDensity.current
+
+        val density = LocalDensity.current
         AnimatedVisibility(
             visible,
             enter = slideInVertically {
-                    with(density) { -40.dp.roundToPx() }
-                } + expandVertically(
-                    expandFrom = Alignment.Top
-                ) + fadeIn(
-                    initialAlpha = 0.3f
-                ),
+                with(density) { -40.dp.roundToPx() }
+            } + expandVertically(
+                expandFrom = Alignment.Top
+            ) + fadeIn(
+                initialAlpha = 0.3f
+            ),
             exit = slideOutVertically() + shrinkVertically() + fadeOut()
         ) {
             Column(
@@ -351,21 +378,26 @@ fun ArtistPopCreateMarker(visible:Boolean) {
                             .clip(shape = CircleShape),
                         error = ImageBitmap.imageResource(R.drawable.profile_icon)
                     )
-                    Text(text = cityName[0].adminArea.toString())
+                    Text(text = geoReverse[0].adminArea.toString())
                 }
                 Spacer(modifier = Modifier.size(0.dp))
                 Row(
                     Modifier
                         .fillMaxWidth()
                         .padding(10.dp)) {
-                    Button(onClick = { /*TODO*/ },
+                    Button(onClick = {
+                        insertNewMarker(context = context,  savedLat.value!!.toDouble(), savedLong.value!!.toDouble(), geoReverse[0].adminArea.toString())
+                    },
                         Modifier.weight(1f)) {
                         Text(text = "Colocar Ponto")
                     }
 
                 }
+
         }
     }
+
+
 }
 
 

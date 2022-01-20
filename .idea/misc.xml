@@ -3,30 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="../../../../../layout/compose-model-1642526024291.xml" value="0.1" />
-        <entry key="../../../../../layout/compose-model-1642526028872.xml" value="0.18243243243243243" />
-        <entry key="../../../../../layout/compose-model-1642527910294.xml" value="1.7256317689530687" />
-        <entry key="../../../../../layout/compose-model-1642527915800.xml" value="0.2833614864864865" />
-        <entry key="../../../../../layout/compose-model-1642529750582.xml" value="0.18243243243243243" />
-        <entry key="../../../../../layout/compose-model-1642531480056.xml" value="0.1579391891891892" />
-        <entry key="../../../../../layout/compose-model-1642532855923.xml" value="0.26478040540540543" />
-<<<<<<< HEAD
-        <entry key="../../../../../layout/compose-model-1642612784492.xml" value="0.20101351351351351" />
-        <entry key="../../../../../layout/compose-model-1642617036853.xml" value="0.22407407407407406" />
-        <entry key="../../../../../layout/compose-model-1642617052104.xml" value="0.22407407407407406" />
-        <entry key="../../../../../layout/compose-model-1642617219761.xml" value="0.22407407407407406" />
-        <entry key="../../../../../layout/compose-model-1642617447066.xml" value="0.22407407407407406" />
-        <entry key="../../../../../layout/compose-model-1642617848674.xml" value="0.22407407407407406" />
-        <entry key="../../../../../layout/compose-model-1642618855559.xml" value="1.0" />
-        <entry key="../../../../../layout/compose-model-1642619346644.xml" value="2.0" />
-        <entry key="../../../../../layout/compose-model-1642619352422.xml" value="0.8736462093862816" />
-        <entry key="../../../../../layout/compose-model-1642619355022.xml" value="0.8736462093862816" />
-        <entry key="../../../../../layout/compose-model-1642619376257.xml" value="0.22407407407407406" />
-        <entry key="../../../../../layout/compose-model-1642620376579.xml" value="0.22407407407407406" />
-        <entry key="../../../../../layout/compose-model-1642622202390.xml" value="0.22407407407407406" />
-        <entry key="../../../../../layout/compose-model-1642622482901.xml" value="2.0" />
-=======
->>>>>>> r10
+        <entry key="../../../../../layout/compose-model-1642712097552.xml" value="0.1" />
+        <entry key="../../../../../layout/compose-model-1642712159388.xml" value="0.1" />
+        <entry key="../../../../../layout/compose-model-1642720064086.xml" value="1.5178571428571428" />
+        <entry key="../../../../../layout/compose-model-1642721539832.xml" value="2.0" />
         <entry key="../../../../layout/compose-model-1637681751395.xml" value="0.18327702702702703" />
         <entry key="../../../../layout/compose-model-1637682123575.xml" value="0.1701858108108108" />
         <entry key="..\:/Users/diogo/Bet20/IPVC/Artip/app/src/main/res/drawable/baseline_feed_24.xml" value="0.23177083333333334" />
@@ -36,13 +16,7 @@
         <entry key="..\:/Users/diogo/Bet20/IPVC/Artip/app/src/main/res/layout/activity_main2.xml" value="0.215625" />
         <entry key="..\:/Users/diogo/Bet20/IPVC/Artip/app/src/main/res/layout/menu.xml" value="0.21927083333333333" />
         <entry key="..\:/Users/diogo/Bet20/IPVC/Artip/app/src/main/res/menu/bottom_nav_menu.xml" value="0.21927083333333333" />
-<<<<<<< HEAD
-        <entry key="app/src/main/res/drawable/cog.xml" value="0.309375" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.22" />
-        <entry key="app/src/main/res/layout/mainfadein.xml" value="0.34010416666666665" />
-=======
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.340625" />
->>>>>>> 8cf2ff32ee9befc10fd8035f1a5dd8ce7aaae269
       </map>
     </option>
   </component>
