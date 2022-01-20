@@ -2,8 +2,11 @@ package estg.djr.artip
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -26,13 +29,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
 import com.google.android.libraries.maps.CameraUpdateFactory
+import com.google.android.libraries.maps.GoogleMap
 import com.google.android.libraries.maps.MapView
 import com.google.android.libraries.maps.model.LatLng
 import com.google.android.libraries.maps.model.Marker
@@ -54,15 +59,14 @@ class Map : ComponentActivity() {
             ArtipTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-
                 }
             }
         }
     }
-}
 
+}
 @Composable
-fun GoogleMap(visible : Boolean, localizacao: LatLng) {
+fun GoogleMap(visible : Boolean, Localizacao: LatLng) {
     if(visible) {
         val mapView = rememberMapViewWithLifeCycle()
 
@@ -84,19 +88,21 @@ fun GoogleMap(visible : Boolean, localizacao: LatLng) {
 
                         val pickUp = LatLng(41.6946, -8.83016) //Viana
                         val destination = LatLng(41.15, -8.61024) //Bangalore
-                        val Localizacao = localizacao
+                        val localizacao = Localizacao
 
-                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(Localizacao, 6f))
+                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(destination, 6f))
+
+                        val markerLocalizacaoUser =  MarkerOptions()
+                            .title("Você está aqui!")
+                            .position(localizacao)
+                        map.addMarker(markerLocalizacaoUser)
 
                         val markerOptions =  MarkerOptions()
                             .title("Viana do Castelo")
                             .position(pickUp)
                         map.addMarker(markerOptions)
 
-                        val markerOptionsLocalizacao = MarkerOptions()
-                            .title("Você")
-                            .position(localizacao)
-                        map.addMarker(markerOptionsLocalizacao)
+
 
                         val markerOptionsDestination = MarkerOptions()
                             .title("Porto")
