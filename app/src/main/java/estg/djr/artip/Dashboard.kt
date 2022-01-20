@@ -45,8 +45,9 @@ class Dashboard : ComponentActivity() {
                 }
                 2 -> {
                     FeedCompo(visible = false)
-                    ProfileCompo(true)
+                    ProfileCompo(false)
                     GoogleMap(visible = false)
+                    QRCode(visible = true)
 
                 }
 

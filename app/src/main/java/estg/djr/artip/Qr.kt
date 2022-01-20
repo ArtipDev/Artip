@@ -8,6 +8,11 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.budiyev.android.codescanner.AutoFocusMode
@@ -15,9 +20,11 @@ import com.budiyev.android.codescanner.CodeScanner
 import com.budiyev.android.codescanner.DecodeCallback
 import com.budiyev.android.codescanner.ErrorCallback
 import com.budiyev.android.codescanner.ScanMode
+import com.google.zxing.qrcode.encoder.QRCode
 import kotlinx.android.synthetic.main.activity_qr.*
 
 private const val CameraRequest = 101
+var textQRCode = "bla...bla..."
 
 class Qr : AppCompatActivity() {
 
@@ -46,7 +53,7 @@ class Qr : AppCompatActivity() {
 
             decodeCallback = DecodeCallback {
                 runOnUiThread {
-                    TextView.text = it.text
+                    textQRCode = it.text
                 }
             }
             //Se der erro
@@ -94,5 +101,19 @@ class Qr : AppCompatActivity() {
                 }
             }
         }
+    }
+}
+
+@Composable
+fun QRCode(visible: Boolean){
+    Log.d("***text", ""+textQRCode)
+    var text = remember {
+        mutableStateOf(textQRCode)
+    }
+
+
+
+    Column() {
+        Text(text = text.value)
     }
 }

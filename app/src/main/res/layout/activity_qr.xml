@@ -23,5 +23,5 @@
         android:text="Scan Value"
         android:textSize="40sp"
         android:layout_centerHorizontal="true"
-        android:textColor="#FF689B"/>
+        android:textColor="#0991BA"/>
 </RelativeLayout>
