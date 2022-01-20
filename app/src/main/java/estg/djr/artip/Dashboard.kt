@@ -21,7 +21,9 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.location.*
 import com.google.android.libraries.maps.GoogleMap
 import com.google.android.libraries.maps.model.LatLng
+import estg.djr.artip.dataclasses.PostData
 import estg.djr.artip.ui.theme.ArtipTheme
+import java.util.*
 
 class Dashboard : ComponentActivity() {
     val nv = Navbar()
@@ -96,6 +98,13 @@ class Dashboard : ComponentActivity() {
 
     @Composable
     fun MainPage(tabChange: Navbar = Navbar(), localizacao: LatLng) {
+
+        val list: List<PostData> =
+            Arrays.asList(PostData("123123","JohnDoe", "Um doid três", "https://lh3.googleusercontent.com/a/AATXAJyEBAfnbxsRDXsmqzTETt6A7vhrzVqIQIA9yAMx=s96-c"),
+                PostData("123123","JohnDoe", "Um doid três", "https://lh3.googleusercontent.com/a/AATXAJyEBAfnbxsRDXsmqzTETt6A7vhrzVqIQIA9yAMx=s96-c"),
+                PostData("123123","JohnDoe", "Um doid três", "https://lh3.googleusercontent.com/a/AATXAJyEBAfnbxsRDXsmqzTETt6A7vhrzVqIQIA9yAMx=s96-c"))
+
+
         var vi: Boolean = true
         val currentTab : Int = tabChange.tab.value
         Scaffold(
@@ -105,18 +114,27 @@ class Dashboard : ComponentActivity() {
                 0 -> {
                     GoogleMap(visible = true, localizacao)
                     ProfileCompo(false)
-                    FeedCompo(visible = false)
+                    SettingsCompo(visible = false)
+                    FeedCompo(visible = false,list)
                 }
                 1 -> {
                     GoogleMap(visible = false, localizacao)
                     ProfileCompo(visible = false)
-                    //FeedCompo(true)
+                    SettingsCompo(visible = false)
+                    FeedCompo(true,list)
                 }
                 2 -> {
-                    FeedCompo(visible = false)
+                    FeedCompo(visible = false,list)
                     ProfileCompo(true)
                     GoogleMap(visible = false, localizacao)
+                    SettingsCompo(visible = false)
 
+                }
+                4 -> {
+                    SettingsCompo(visible = true)
+                    FeedCompo(visible = false, list)
+                    GoogleMap(visible = false, localizacao)
+                    ProfileCompo(visible = false)
                 }
 
             }
