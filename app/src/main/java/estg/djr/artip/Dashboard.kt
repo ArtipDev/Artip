@@ -37,11 +37,13 @@ class Dashboard : ComponentActivity() {
                     GoogleMap(visible = true)
                     ProfileCompo(false)
                     FeedCompo(visible = false)
+                    QRCode(visible = false)
                 }
                 1 -> {
                     GoogleMap(visible = false)
                     ProfileCompo(visible = false)
                     FeedCompo(true)
+                    QRCode(visible = false)
                 }
                 2 -> {
                     FeedCompo(visible = false)
@@ -50,9 +52,7 @@ class Dashboard : ComponentActivity() {
                     QRCode(visible = true)
 
                 }
-
             }
-
         }
     }
 }
