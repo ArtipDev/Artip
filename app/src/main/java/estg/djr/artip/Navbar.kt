@@ -40,6 +40,7 @@ import androidx.lifecycle.ViewModel
 import com.google.android.gms.common.util.CollectionUtils.listOf
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import estg.djr.artip.data.GotoUser
 import estg.djr.artip.dataclasses.MutableParamsNavbar
 import estg.djr.artip.enums.NavItemsNumeration
 import estg.djr.artip.ui.theme.ArtipTheme
@@ -48,7 +49,6 @@ import estg.djr.artip.ui.theme.SelectedNavButton
 
 
 class Navbar : ViewModel() {
-
     val tab: MutableState<Int> = mutableStateOf(0)
 }
 

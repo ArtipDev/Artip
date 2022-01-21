@@ -56,19 +56,17 @@ import com.google.android.libraries.maps.model.BitmapDescriptor
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.GeoPoint
-import estg.djr.artip.data.CurrentLocationLat
-import estg.djr.artip.data.CurrentLocationLong
-import estg.djr.artip.data.SavePrefRadius
-import estg.djr.artip.data.SavePrefUserType
+import estg.djr.artip.data.*
+import kotlinx.coroutines.runBlocking
 import java.util.*
 
 
 private var db = FirebaseFirestore.getInstance();
 private var mAuth = FirebaseAuth.getInstance()
 private var canAcessToFirebase : Boolean = false
-
-
-
+private var currentMarker: String = ""
+private var isPerforming: Boolean = false
+private var markerUserId: String = ""
 
 class Map : ComponentActivity() {
 
@@ -85,10 +83,11 @@ class Map : ComponentActivity() {
 
 }
 @Composable
-fun GoogleMap(visible : Boolean) {
+fun GoogleMap(visible : Boolean, tab : Navbar) {
 
     Log.d("LATLONG_", "123123123123")
 
+    var btnAtuacao = remember { mutableStateOf("Começar atuação!")}
 
     val context = LocalContext.current
 
@@ -101,7 +100,7 @@ fun GoogleMap(visible : Boolean) {
     val savedUserType = dataUserType.getUserTypePref.collectAsState(initial = false)
 
     val dataRadius = SavePrefRadius(context)
-    val savedRadius = dataRadius.getRadiusPref.collectAsState(initial = "")
+    val savedRadius = dataRadius.getRadiusPref.collectAsState(initial = "1")
 
     if(visible) {
         val mapView = rememberMapViewWithLifeCycle()
@@ -192,6 +191,7 @@ fun GoogleMap(visible : Boolean) {
                                 v.value = true
                                 name.value = it.title.toString()
                                 userPhoto.value = it.tag.toString()
+                                markerUserId = it.id
                                 true
                             })
 
@@ -208,19 +208,25 @@ fun GoogleMap(visible : Boolean) {
                     }
                     }
             }
-            ArtistPopInfo(name = name.value, v.value, userPhoto.value)
+            ArtistPopInfo(name = name.value, v.value, userPhoto.value, tab)
             ArtistPopCreateMarker(vMarkerPop.value)
 
 
                 if(savedUserType.value!!) {
                     Box(Modifier.fillMaxSize(), Alignment.BottomCenter) {
                         Button(onClick = {
-                            vMarkerPop.value = true
+                            if(isPerforming) {
+                                removeMarker(context = context)
+                                btnAtuacao.value = "Começar atuação!"
+                            } else {
+                                vMarkerPop.value = true
+                                btnAtuacao.value = "Parar atuação!"
+                            }
                         },
                             Modifier
                                 .background(color = Artip_pink)
                                 .offset(x = 0.dp, y = -80.dp)) {
-                            Text(text = "Start!", Modifier.padding(10.dp))
+                            Text(text = btnAtuacao.value, Modifier.padding(10.dp))
                         }
                     }
                 }
@@ -241,71 +247,83 @@ private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): Bitm
 }
 
 @Composable
-fun ArtistPopInfo(name: String, visible: Boolean, markerUidDoc:String) {
+fun ArtistPopInfo(name: String, visible: Boolean, markerUidDoc:String, nav: Navbar) {
 
-    val density = LocalDensity.current
-    AnimatedVisibility(
-        visible,
-        enter = slideInVertically {
-            with(density) { -40.dp.roundToPx() }
-        } + expandVertically(
-            expandFrom = Alignment.Top
-        ) + fadeIn(
-            initialAlpha = 0.3f
-        ),
-        exit = slideOutVertically() + shrinkVertically() + fadeOut()
-    ) {
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .background(Artip_pink)
+    val context = LocalContext.current
+
+    val gu = GotoUser(context)
+
+
+
+        val density = LocalDensity.current
+        AnimatedVisibility(
+            visible,
+            enter = slideInVertically {
+                with(density) { -40.dp.roundToPx() }
+            } + expandVertically(
+                expandFrom = Alignment.Top
+            ) + fadeIn(
+                initialAlpha = 0.3f
+            ),
+            exit = slideOutVertically() + shrinkVertically() + fadeOut()
         ) {
-
-
             Column(
                 Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .background(Artip_pink)
             ) {
-                Row(Modifier.padding(10.dp),
 
 
-                    Arrangement.SpaceEvenly) {
-
-                    GlideImage(
-                        imageModel = markerUidDoc,
-                        modifier = Modifier
-                            .size(90.dp)
-                            .padding(10.dp)
-                            .clip(shape = CircleShape),
-                        error = ImageBitmap.imageResource(R.drawable.profile_icon)
-                    )
-                    Text(text = name)
-
-                }
-
-                Spacer(modifier = Modifier.size(0.dp))
-                Row(
+                Column(
                     Modifier
                         .fillMaxWidth()
-                        .padding(10.dp)) {
-                    Button(onClick = { /*TODO*/ },
-                        Modifier.weight(1f)) {
-                        Text(text = "Click me")
-                    }
-                    Spacer(modifier = Modifier.size(10.dp))
-                    Button(onClick = { /*TODO*/ },
-                        Modifier.weight(1f)) {
-                        Text(text = "No me...")
-                    }
-                }
+                        .wrapContentHeight()
+                        .background(Artip_pink)
+                ) {
+                    Row(Modifier.padding(10.dp),
 
+
+                        Arrangement.SpaceEvenly) {
+
+                        GlideImage(
+                            imageModel = markerUidDoc,
+                            modifier = Modifier
+                                .size(90.dp)
+                                .padding(10.dp)
+                                .clip(shape = CircleShape),
+                            error = ImageBitmap.imageResource(R.drawable.profile_icon)
+                        )
+                        Text(text = name)
+
+                    }
+
+                    Spacer(modifier = Modifier.size(0.dp))
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp)) {
+                        Button(onClick = {
+                            runBlocking {
+                                gu.setGotoUser(markerUserId)
+                            }
+                            nav.tab.value = 5
+                        },
+                            Modifier.weight(1f)) {
+                            Text(text = "Profile")
+                        }
+                        Spacer(modifier = Modifier.size(10.dp))
+                        Button(onClick = { /*TODO*/ },
+                            Modifier.weight(1f)) {
+                            Text(text = "No me...")
+                        }
+                    }
+
+                }
             }
         }
     }
-}
+
 
 
 fun insertNewMarker(context: Context, lat: Double, long : Double, streetName : String) {
@@ -319,18 +337,30 @@ fun insertNewMarker(context: Context, lat: Double, long : Double, streetName : S
         "artistname" to currentUser?.displayName.toString(),
         "loc" to location,
         "name" to streetName.toString(),
-        "urlPhoto" to currentUser?.photoUrl.toString()
+        "urlPhoto" to currentUser?.photoUrl.toString(),
+        "currentUserId" to currentUser?.uid
     )
 
     db.collection("markers")
         .add(marker)
         .addOnSuccessListener { documentReference ->
-            Log.d("DATA", "ADDED")
-            Toast.makeText(context, "Pin adicionadom sucesso!", Toast.LENGTH_SHORT).show()
+            Log.d("DATA____", "ADDED " + documentReference.id)
+            currentMarker = documentReference.id
+            Toast.makeText(context, "Começo da atuação!", Toast.LENGTH_SHORT).show()
         }
         .addOnFailureListener { e -> Log.w("INSERIR", "Error adding document", e) }
 }
 
+fun removeMarker(context: Context) {
+    val currentUser = mAuth.currentUser
+
+    db.collection("markers")
+        .document(currentMarker).delete()
+        .addOnSuccessListener {
+            Toast.makeText(context, "Atuação finalizada!", Toast.LENGTH_SHORT).show()
+        }
+        .addOnFailureListener { e -> Log.w("INSERIR", "Error adding document", e) }
+}
 
 
 @Composable
@@ -387,9 +417,10 @@ fun ArtistPopCreateMarker(visible:Boolean) {
                         .padding(10.dp)) {
                     Button(onClick = {
                         insertNewMarker(context = context,  savedLat.value!!.toDouble(), savedLong.value!!.toDouble(), geoReverse[0].adminArea.toString())
+                        isPerforming = true
                     },
                         Modifier.weight(1f)) {
-                        Text(text = "Colocar Ponto")
+                        Text(text = "Começar Atuação!")
                     }
 
                 }
@@ -398,14 +429,6 @@ fun ArtistPopCreateMarker(visible:Boolean) {
     }
 
 
-}
-
-
-
-@Preview
-@Composable
-fun forPreview(){
-    ArtistPopInfo(name = "Someone", visible = true, "https://lh3.googleusercontent.com/a/AATXAJyEBAfnbxsRDXsmqzTETt6A7vhrzVqIQIA9yAMx=s96-c")
 }
 
 

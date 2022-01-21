@@ -2,6 +2,7 @@ package estg.djr.artip
 
 import android.content.Context
 import android.content.Intent
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.text.Layout
@@ -17,10 +18,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,17 +35,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
+import androidx.datastore.dataStore
+import com.google.android.libraries.maps.model.LatLng
+import com.google.android.libraries.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.skydoves.landscapist.glide.GlideImage
+import estg.djr.artip.data.GotoUser
+import estg.djr.artip.data.SavePrefUserType
 import estg.djr.artip.dataclasses.PostData
 import estg.djr.artip.ui.theme.ArtipTheme
 import org.intellij.lang.annotations.JdkConstants
 import kotlin.math.round
 
 private var bool = true;
-public var myProfile = true;
 public var Artista = true;
 var Posts: List<Int> = arrayListOf(1,1,1,1,1)
 var Favoritos: List<Int> = arrayListOf(1,1,1,1,1,1)
@@ -63,7 +65,7 @@ class Profile : ComponentActivity() {
             ArtipTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    ProfileCampo(true, myProfile)
+
                 }
             }
         }
@@ -83,18 +85,69 @@ fun Ligar(Numero: String, context: Context){
 }
 
 @Composable
-fun ProfileCampo(visible: Boolean, myProfile: Boolean) {
+fun ProfileCampo(visible: Boolean, isNotSelf: Boolean) {
     var text = remember { mutableStateOf(Seguir(bool)) }
     var postsArr = remember {mutableStateListOf<String>()}
+    var favsList = remember { mutableStateListOf<String>()}
 
     val context = LocalContext.current
+    var final_: String = ""
+    val str: String = GotoUser(LocalContext.current).getGotoUser.collectAsState(initial = "").value!!
+
+    if(isNotSelf){
+
+        var user: String = ""
+        var userId: String
+
+        val useRef = db.collection("users")
+        useRef.addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                return@addSnapshotListener
+            }
+
+            if (snapshot != null ) {
+                val documents = snapshot.documents
+
+                if (documents.size > 0) {
+                    for (document in documents) {
+
+                        user = document.get("name") as String
+                        userId = document.id
+
+                        if(userId == str) {
+                            final_ = user
+                            Log.d("******", "" + final_)
+                        }
+
+                    }
+
+                }
+
+            }}
+
+    }
+
 
     if(visible) {
 
+        val docUsersFav = db.collection("users").document(mAuth.currentUser?.uid!!.toString()).collection("favoritos")
+            .orderBy("nomeFavorito", Query.Direction.ASCENDING).limit(100)
 
-      //  val docRef = db.collection("users").document(mAuth.currentUser?.uid!!.toString()).collection("favoritos")
-
-
+        docUsersFav.addSnapshotListener { snapshot, e ->
+            if (e != null){
+                return@addSnapshotListener
+            }
+            if (snapshot != null) {
+                val docList_ = snapshot.documents
+                if(docList_.size != 0) {
+                    for(docl in docList_) {
+                        var entry = docl.get("nomeFavorito")
+                        favsList.add(entry.toString())
+                        Log.d("LISTA", favsList.toString())
+                    }
+                }
+            }
+        }
 
         val docRef = db.collection("posts")
             .whereEqualTo("user_uid", mAuth.currentUser?.uid!!.toString())
@@ -117,9 +170,10 @@ fun ProfileCampo(visible: Boolean, myProfile: Boolean) {
             }
         }
 
+        val dataUserType = SavePrefUserType(context)
+        val savedUserType = dataUserType.getUserTypePref.collectAsState(initial = false)
 
-
-        if(Artista){
+        if(savedUserType.value!! || isNotSelf){
             Text(text = "Artista",modifier = Modifier.padding(start = 10.dp, top = 4.dp), fontWeight = FontWeight.Bold)
         }else{
             Text(text = "Espectador", modifier = Modifier.padding(start = 10.dp, top = 4.dp), fontWeight = FontWeight.Bold)
@@ -143,7 +197,7 @@ fun ProfileCampo(visible: Boolean, myProfile: Boolean) {
                 Text(mAuth.currentUser?.displayName!!, fontSize = 30.sp)
                 Text("Porto, Portugal", fontSize = 20.sp)
             }
-            if(!myProfile) {
+            if(isNotSelf) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -192,7 +246,7 @@ fun ProfileCampo(visible: Boolean, myProfile: Boolean) {
                     }
                 }
             }
-            if(Artista || !myProfile) {
+            if(Artista || isNotSelf) {
                 Text(text = "Publicações:",modifier = Modifier.padding(top = 10.dp))
                 LazyColumn(
                     Modifier.padding(
@@ -210,13 +264,7 @@ fun ProfileCampo(visible: Boolean, myProfile: Boolean) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview5() {
-    ArtipTheme {
-        ProfileCampo(true, myProfile)
-    }
-}
+
 
 @Composable
 fun Posts(username: String, userMensage: String){
@@ -258,17 +306,19 @@ fun Posts(username: String, userMensage: String){
 
 @Composable
 fun Favoritos(username: String) {
-    Column(modifier = Modifier
-        .padding(vertical = 2.dp)
-        .border(1.dp, Color(231, 151, 151))
-        .clip(shape = RoundedCornerShape(6.dp))) {
+    Column(
+        modifier = Modifier
+            .padding(vertical = 2.dp)
+            .border(1.dp, Color(231, 151, 151))
+            .clip(shape = RoundedCornerShape(6.dp))
+    ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
                 .background(color = Color(216, 216, 216, 255))
                 .padding(horizontal = 10.dp, vertical = 5.dp)
-        ){
+        ) {
 
 
             GlideImage(

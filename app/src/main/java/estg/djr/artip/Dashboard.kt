@@ -15,7 +15,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
+
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -44,7 +44,7 @@ class Dashboard : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ArtipTheme {
-                MainPage(nv)
+                MainPage(nv, false, 0)
             }
         }
 
@@ -111,55 +111,70 @@ class Dashboard : ComponentActivity() {
         )
     }
 
-    @Composable
-    fun MainPage(tabChange: Navbar = Navbar()) {
 
-        val list: List<PostData> =
-            Arrays.asList(PostData("123123","JohnDoe", "Um doid três", "https://lh3.googleusercontent.com/a/AATXAJyEBAfnbxsRDXsmqzTETt6A7vhrzVqIQIA9yAMx=s96-c"),
-                PostData("123123","JohnDoe", "Um doid três", "https://lh3.googleusercontent.com/a/AATXAJyEBAfnbxsRDXsmqzTETt6A7vhrzVqIQIA9yAMx=s96-c"),
-                PostData("123123","JohnDoe", "Um doid três", "https://lh3.googleusercontent.com/a/AATXAJyEBAfnbxsRDXsmqzTETt6A7vhrzVqIQIA9yAMx=s96-c"))
+}
 
+@Composable
+fun MainPage(tabChange: Navbar = Navbar(), default: Boolean, page: Int) {
 
-        var vi: Boolean = true
-        val currentTab : Int = tabChange.tab.value
-        Scaffold(
-            bottomBar = { BottomNavigationBar(nv) },
-        ) {
-            when(currentTab) {
-                0 -> {
-                    GoogleMap(visible = true)
-                    ProfileCampo(false, false)
-                    SettingsCompo(visible = false)
-                    FeedCompo(visible = false,list)
-                }
-                1 -> {
-                    GoogleMap(visible = false)
-                    ProfileCampo(visible = false, false)
-                    SettingsCompo(visible = false)
-                    FeedCompo(true,list)
-                }
-                2 -> {
+    val list: List<PostData> =
+        Arrays.asList(PostData("123123","JohnDoe", "Um doid três", "https://lh3.googleusercontent.com/a/AATXAJyEBAfnbxsRDXsmqzTETt6A7vhrzVqIQIA9yAMx=s96-c"),
+            PostData("123123","JohnDoe", "Um doid três", "https://lh3.googleusercontent.com/a/AATXAJyEBAfnbxsRDXsmqzTETt6A7vhrzVqIQIA9yAMx=s96-c"),
+            PostData("123123","JohnDoe", "Um doid três", "https://lh3.googleusercontent.com/a/AATXAJyEBAfnbxsRDXsmqzTETt6A7vhrzVqIQIA9yAMx=s96-c"))
+
+    var vi: Boolean = true
+    val currentTab : Int
+
+    if(default) {
+        tabChange.tab.value = page
+    }
+
+    currentTab = tabChange.tab.value
+
+    Scaffold(
+        bottomBar = { BottomNavigationBar(tabChange) },
+    ) {
+        when(currentTab) {
+            0 -> {
+                GoogleMap(visible = true, tab = tabChange)
+                ProfileCampo(false, false)
+                SettingsCompo(visible = false)
+                FeedCompo(visible = false,list)
+                QRCode(visible = false)
+            }
+            1 -> {
+                GoogleMap(visible = false, tab = tabChange)
+                ProfileCampo(visible = false, false)
+                SettingsCompo(visible = false)
+                FeedCompo(true,list)
+                QRCode(visible = false)
+            }
+            2 -> {
+                FeedCompo(visible = false,list)
+                ProfileCampo(false, false)
+                GoogleMap(visible = false, tab = tabChange)
+                SettingsCompo(visible = false)
+                QRCode(visible = true)
+            }
+            3 -> {
                 FeedCompo(visible = false,list)
                 ProfileCampo(true, false)
-                GoogleMap(visible = false)
+                GoogleMap(visible = false, tab = tabChange)
                 SettingsCompo(visible = false)
-                }
-                3 -> {
-                    FeedCompo(visible = false,list)
-                    ProfileCampo(true, myProfile = true)
-                    GoogleMap(visible = false)
-                    SettingsCompo(visible = false)
-
-                }
-                4 -> {
-                    SettingsCompo(visible = true)
-                    FeedCompo(visible = false, list)
-                    GoogleMap(visible = false)
-                    ProfileCampo(visible = false, false)
-                }
-
+                QRCode(visible = false)
+            }
+            4 -> {
+                SettingsCompo(visible = true)
+                FeedCompo(visible = false, list)
+                GoogleMap(visible = false, tab = tabChange)
+                ProfileCampo(visible = false, false)
+                QRCode(visible = false)
+            }
+            5 -> {
+                ProfileCampo(visible = true, true)
             }
 
         }
+
     }
 }

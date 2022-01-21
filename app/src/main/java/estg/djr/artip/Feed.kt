@@ -32,7 +32,7 @@ import estg.djr.artip.ui.theme.Artip_pink
 import java.util.*
 
 
-private var  db = FirebaseFirestore.getInstance();
+private var db = FirebaseFirestore.getInstance();
 private var mAuth = FirebaseAuth.getInstance()
 var showAlert = false;
 
@@ -73,6 +73,8 @@ fun insertPost(context: Context, text: String) {
         "username" to displaName,
         "userPhoto" to photoUrl
     )
+
+    Log.d("CLICOU", "Clicou")
 
     db.collection("posts")
         .add(postData)
